@@ -22,12 +22,16 @@ int main(int argc, char **argv)
     // get header info
     struct HEADER head = wave_header(argv[1]);
 
+    // get wave data size
+    int data_size = wave_data_size(head);
     // get wav data
-    char *data = wave_data_list(argv[1]);
+    char *data = (char*) malloc(data_size);
+    memset(data, 0, data_size);
+    get_wave_data(data, argv[1]);
 
     // write wav to the file
     create_wave(head, data, "../../audio/modified/copied.wav");
-
+    
     free(data);
     return 0;
 }

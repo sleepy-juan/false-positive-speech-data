@@ -33,7 +33,7 @@ int wave_data_size(struct HEADER header)
 
 /* create wave data list (char*, data size = wave_data_size(header)). */
 /* IMPORTANT!! you should free this pointer after use it. */
-char *wave_data_list(char *filename)
+void get_wave_data(char* data_list, char *filename)
 {
     FILE *wave = fopen(filename, "r");
     if (wave == NULL)
@@ -42,16 +42,13 @@ char *wave_data_list(char *filename)
     }
     struct HEADER head;
     fread(&head, sizeof(head), 1, wave);
-    char *data = (char *)calloc(head.data_size, 1);
-    if (data == NULL)
+    if (data_list == NULL)
     {
         fclose(wave);
         exit(-1);
     }
-    fread(data, head.data_size, 1, wave);
+    fread(data_list, head.data_size, 1, wave);
     fclose(wave);
-
-    return data;
 }
 
 /* create new .wav file with header and data_list[]. ex filename = "new_wave.wav" */
