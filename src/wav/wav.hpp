@@ -12,13 +12,12 @@
 #include <string>
 
 /*
-    Wav Class
-    - contains wav format file information as attributes
-    - maintains handling methods for wav format file
+    WavHeader Class
+    - contains wav format header information as attributes
 */
-class Wav
+class WavHeader
 {
-private:
+public:
     //--------- HEADER ----------
     /* RIFF Bitstream Format Info */
     char riff[4];       // "riff"
@@ -38,6 +37,17 @@ private:
     /* DATA */
     char data[4];  // "data"
     uint32_t size; // data size
+};
+
+/*
+    Wav Class
+    - contains wav format file information as attributes
+    - maintains handling methods for wav format file
+*/
+class Wav
+{
+private:
+    WavHeader header;
 
     //--------- Info ----------
     std::string filename;

@@ -17,26 +17,26 @@ void Wav::load()
     fin.unsetf(std::ios::skipws);
 
     /* RIFF Bitstream Format Info */
-    fin.read(this->riff, 4);
-    fin.read((char *)&this->riff_size, 4);
-    fin.read(this->riff_wave, 4);
+    fin.read(this->header.riff, 4);
+    fin.read((char *)&this->header.riff_size, 4);
+    fin.read(this->header.riff_wave, 4);
 
     /* FMT */
-    fin.read(this->fmt, 4);
-    fin.read((char *)&this->fmt_size, 4);
-    fin.read((char *)&this->audio_format, 2);
-    fin.read((char *)&this->n_channels, 2);
-    fin.read((char *)&this->sample_rate, 4);
-    fin.read((char *)&this->avg_byte_rate, 4);
-    fin.read((char *)&this->block_align, 2);
-    fin.read((char *)&this->bits_per_sample, 2);
+    fin.read(this->header.fmt, 4);
+    fin.read((char *)&this->header.fmt_size, 4);
+    fin.read((char *)&this->header.audio_format, 2);
+    fin.read((char *)&this->header.n_channels, 2);
+    fin.read((char *)&this->header.sample_rate, 4);
+    fin.read((char *)&this->header.avg_byte_rate, 4);
+    fin.read((char *)&this->header.block_align, 2);
+    fin.read((char *)&this->header.bits_per_sample, 2);
 
     /* DATA */
-    fin.read(this->data, 4);
-    fin.read((char *)&this->size, 4);
+    fin.read(this->header.data, 4);
+    fin.read((char *)&this->header.size, 4);
 
     /* Body */
-    this->bytes.reserve(this->size);
+    this->bytes.reserve(this->header.size);
     std::copy(std::istream_iterator<uint8_t>(fin),
               std::istream_iterator<uint8_t>(),
               std::back_inserter(this->bytes));
@@ -46,17 +46,17 @@ void Wav::load()
 
 bool Wav::isRiffValid()
 {
-    return strncmp("RIFF", this->riff, 4) == 0 && strncmp("WAVE", this->riff_wave, 4) == 0;
+    return strncmp("RIFF", this->header.riff, 4) == 0 && strncmp("WAVE", this->header.riff_wave, 4) == 0;
 }
 
 bool Wav::isFmtValid()
 {
-    return strncmp("fmt ", this->fmt, 4) == 0;
+    return strncmp("fmt ", this->header.fmt, 4) == 0;
 }
 
 bool Wav::isDataValid()
 {
-    return strncmp("data", this->data, 4) == 0;
+    return strncmp("data", this->header.data, 4) == 0;
 }
 
 //--------- Public Methods ----------
@@ -77,17 +77,17 @@ bool Wav::isValid()
 /* getters */
 uint16_t Wav::getChannelSize()
 {
-    return this->n_channels;
+    return this->header.n_channels;
 }
 
 uint32_t Wav::getSampleRate()
 {
-    return this->sample_rate;
+    return this->header.sample_rate;
 }
 
 uint16_t Wav::getSampleSizeInBits()
 {
-    return this->bits_per_sample;
+    return this->header.bits_per_sample;
 }
 
 std::vector<uint8_t> &Wav::getBytes()
@@ -97,19 +97,19 @@ std::vector<uint8_t> &Wav::getBytes()
 
 uint32_t Wav::getSize()
 {
-    return this->size;
+    return this->header.size;
 }
 
 /* computed variables */
 uint16_t Wav::getSampleSize()
 {
-    return this->bits_per_sample / 8;
+    return this->header.bits_per_sample / 8;
 }
 
 unsigned Wav::getLengthInSeconds()
 {
-    unsigned bytes_per_seconds = this->sample_rate * this->bits_per_sample / 8 * this->n_channels;
-    return this->size / bytes_per_seconds;
+    unsigned bytes_per_seconds = this->header.sample_rate * this->header.bits_per_sample / 8 * this->header.n_channels;
+    return this->header.size / bytes_per_seconds;
 }
 
 /* write wav */
@@ -119,26 +119,26 @@ void Wav::make(std::string filename)
     fout.unsetf(std::ios::skipws);
 
     /* RIFF Bitstream Format Info */
-    fout.write(this->riff, 4);
-    fout.write((char *)&this->riff_size, 4);
-    fout.write(this->riff_wave, 4);
+    fout.write(this->header.riff, 4);
+    fout.write((char *)&this->header.riff_size, 4);
+    fout.write(this->header.riff_wave, 4);
 
     /* FMT */
-    fout.write(this->fmt, 4);
-    fout.write((char *)&this->fmt_size, 4);
-    fout.write((char *)&this->audio_format, 2);
-    fout.write((char *)&this->n_channels, 2);
-    fout.write((char *)&this->sample_rate, 4);
-    fout.write((char *)&this->avg_byte_rate, 4);
-    fout.write((char *)&this->block_align, 2);
-    fout.write((char *)&this->bits_per_sample, 2);
+    fout.write(this->header.fmt, 4);
+    fout.write((char *)&this->header.fmt_size, 4);
+    fout.write((char *)&this->header.audio_format, 2);
+    fout.write((char *)&this->header.n_channels, 2);
+    fout.write((char *)&this->header.sample_rate, 4);
+    fout.write((char *)&this->header.avg_byte_rate, 4);
+    fout.write((char *)&this->header.block_align, 2);
+    fout.write((char *)&this->header.bits_per_sample, 2);
 
     /* DATA */
-    fout.write(this->data, 4);
-    fout.write((char *)&this->size, 4);
+    fout.write(this->header.data, 4);
+    fout.write((char *)&this->header.size, 4);
 
     /* Body */
-    fout.write((char *)&this->bytes[0], this->size);
+    fout.write((char *)&this->bytes[0], this->header.size);
 
     fout.close();
 }
