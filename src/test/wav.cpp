@@ -33,28 +33,6 @@ int main(int argc, char **argv)
     std::cout << "Stored Size(bytes): " << wav.getBytes().size() << " bytes" << std::endl;
 
     wav.make(argv[2]);
-    wav.makeHeader(argv[1] + std::string(".header"));
-    wav.makeBody(argv[1] + std::string(".body"));
-
-    Wav wav2(argv[2]);
-    if (!wav2.isValid())
-    {
-        std::cout << "Unable to open " << argv[1] << std::endl;
-        return -1;
-    }
-
-    std::cout << "==============================" << std::endl;
-    std::cout << "Sound Length: " << wav2.getLengthInSeconds() << " sec" << std::endl;
-    std::cout << "Sample Size(bytes): " << wav2.getSampleSize() << " bytes" << std::endl;
-    std::cout << "Sample Size(bits): " << wav2.getSampleSizeInBits() << " bits" << std::endl;
-    std::cout << "Channel Size: " << wav2.getChannelSize() << std::endl;
-    std::cout << "Sample Rate: " << wav2.getSampleRate() << std::endl;
-    std::cout << "Size(bytes): " << wav2.getSize() << " bytes" << std::endl;
-    std::cout << "Stored Size(bytes): " << wav2.getBytes().size() << " bytes" << std::endl;
-    std::cout << "==============================" << std::endl;
-
-    wav2.makeHeader(argv[2] + std::string(".header"));
-    wav2.makeBody(argv[2] + std::string(".body"));
 
     return 0;
 }
