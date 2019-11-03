@@ -1,3 +1,13 @@
+/*
+    wave.h
+
+    created by Sungwoo Jeon
+    modified by Juan Lee
+*/
+
+#ifndef __WAVE_H__
+#define __WAVE_H__
+
 struct HEADER
 {
     /* RIFF */
@@ -30,3 +40,5 @@ char *wave_data_list(char *filename);
 
 /* create new .wav file with header and data_list[]. ex filename = "new_wave.wav" */
 void create_wave(struct HEADER header, char *data_list, char *filename);
+
+#endif
