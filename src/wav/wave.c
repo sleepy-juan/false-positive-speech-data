@@ -42,7 +42,7 @@ char *wave_data_list(char *filename)
     }
     struct HEADER head;
     fread(&head, sizeof(head), 1, wave);
-    char *data = (char *)malloc(head.data_size);
+    char *data = (char *)calloc(head.data_size, 1);
     if (data == NULL)
     {
         fclose(wave);
@@ -50,11 +50,6 @@ char *wave_data_list(char *filename)
     }
     fread(data, head.data_size, 1, wave);
     fclose(wave);
-
-    for (int i = 0; i < head.data_size; i++)
-    {
-        data[i] = data[i] / 2 - 64;
-    }
 
     return data;
 }
