@@ -34,8 +34,7 @@ struct HEADER wave_header(char *filename);
 /* get wave data size. It needs to create data storage list */
 int wave_data_size(struct HEADER header);
 
-/* create wave data list (char*, data size = wave_data_size(header)). */
-/* IMPORTANT!! you should free this pointer after use it. */
+/* get wave data list (data size = wave_data_size(header)). */
 void get_wave_data(char* data_list, char *filename);
 
 /* create new .wav file with header and data_list[]. ex filename = "new_wave.wav" */
