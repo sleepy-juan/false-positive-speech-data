@@ -20,7 +20,7 @@ Testing False Positive Speech Recognition Using Evolutionary Algorithms
 
 ### Roadmap and Responsibility
 
-![Roadmap](./doc/Roadmap.png)
+![Roadmap](./docs/Roadmap.png)
 
 * Plan & Run: **People to whom it may concern**
 * Audio: **Sungwoo**
