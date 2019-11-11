@@ -295,3 +295,38 @@ int main() {
 ```
 
 For more reference, Please google `Smart Pointers` or see [Microsoft Document](https://docs.microsoft.com/ko-kr/cpp/cpp/smart-pointers-modern-cpp?view=vs-2019).
+
+## Branching Rules
+
+This section explains how you use git branches.
+
+### `DO` Use Branches
+
+Everyone on the *master*branch conflict everything. For the unit code of your implementation, please `DO` separate branches.
+
+### `DO` Name Correctly
+
+Your branch names are more important than you think. Please `DO` name them correctly. You may shorten the name. Also, please use `-` for branching more from existing branches.
+
+```bash
+$ git branch genalg	# for genetic algorithm
+$ git checkout genalg
+$ git branch genalg-cx	# for crossover operations on GA
+```
+
+### `DO` Use Your Lastname For Separation
+
+You may want to write another version of code which is not written by yourself. For example, `Sungwoo Jeon` may want to write another version of crossover that is written by `Kihoon Kwon`. In this case Kihoon may have already made a branch named `genalg-cx` or something like this. Then, Sungwoo may make `genalg-cx-jeon`.
+
+```bash
+$ git checkout genalg
+$ git branch genalg-cx-jeon
+```
+
+### `DONT` Push to the Master Directly
+
+`DONT` push to the *master*branch directly. Only use `merge` to modify *master*.
+
+### `DONT` Merge to the Master by Yourself
+
+`DONT` merge to the master by yourself. Let's leave *master* a completely running version of code. We may set one responsible person to merge, or merge when we all meet together.
