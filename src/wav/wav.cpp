@@ -48,6 +48,11 @@ uint8_t &Wav::operator[](int index)
     return data[index];
 }
 
+const std::vector<uint8_t> &Wav::get()
+{
+    return data;
+}
+
 unsigned Wav::size()
 {
     return *(int *)(this->header + 40);

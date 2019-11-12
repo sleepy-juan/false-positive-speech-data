@@ -31,6 +31,7 @@ public:
 
     /* Set & Get */
     uint8_t &operator[](int index); // getter & setter
+    const std::vector<uint8_t> &get();
 
     /* Information */
     unsigned size();
