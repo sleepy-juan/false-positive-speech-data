@@ -9,6 +9,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <iterator>
 
 Wav::Wav(std::string filename)
 {
@@ -51,6 +52,35 @@ uint8_t &Wav::operator[](int index)
 const std::vector<uint8_t> &Wav::get()
 {
     return data;
+}
+
+void Wav::set(std::vector<uint8_t> data)
+{
+    this->data.assign(data.begin(), data.end());
+}
+
+void Wav::clear()
+{
+    for (int i = 0; i < this->data.size(); i++)
+    {
+        this->data[i] = 0;
+    }
+}
+
+std::vector<uint8_t> Wav::range(int start, int end)
+{
+    std::vector<uint8_t>::const_iterator first = this->data.begin() + start;
+    std::vector<uint8_t>::const_iterator last = this->data.begin() + end;
+
+    return std::vector<uint8_t>(first, last);
+}
+
+void Wav::replace(int start, std::vector<uint8_t> v)
+{
+    if (start < 0)
+        start += this->data.size();
+    std::vector<uint8_t>::iterator first = this->data.begin() + start;
+    std::copy(v.begin(), v.end(), first);
 }
 
 unsigned Wav::size()
