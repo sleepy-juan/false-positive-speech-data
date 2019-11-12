@@ -36,3 +36,5 @@ response = client.recognize(config, audio)
 
 for result in response.results:
     print(result.alternatives[0].transcript)
+    print(result.alternatives[0].confidence)
+    print()

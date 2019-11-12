@@ -13,6 +13,8 @@
 
 Wav::Wav(std::string filename)
 {
+    this->_filename = filename;
+
     std::ifstream fin(filename, std::ios::binary);
     fin.unsetf(std::ios::skipws);
     fin.read((char *)this->header, 44);
@@ -85,5 +87,15 @@ void Wav::replace(int start, std::vector<uint8_t> v)
 
 unsigned Wav::size()
 {
-    return *(int *)(this->header + 40);
+    return *(unsigned *)(this->header + 40);
+}
+
+std::string Wav::filename()
+{
+    return this->_filename;
+}
+
+unsigned Wav::sampleRate()
+{
+    return *(unsigned *)(this->header + 24);
 }

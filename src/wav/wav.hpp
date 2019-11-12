@@ -21,6 +21,7 @@ class Wav
 private:
     uint8_t header[44];        // header info
     std::vector<uint8_t> data; // data
+    std::string _filename;     // filename
 
 public:
     Wav(std::string filename); // constructor with open the file
@@ -39,6 +40,8 @@ public:
 
     /* Information */
     unsigned size();
+    std::string filename();
+    unsigned sampleRate();
 };
 
 #endif
