@@ -73,6 +73,14 @@ uint8_t &operator[](int index);
 
 It also may take negative values in range of `-size` $\le$ `index` $\le$ `-1` . 
 
+### get
+
+`get` returns the vector of bytes.
+
+```cpp
+const std::vector<uint8_t> &get();
+```
+
 ## Example
 
 ```cpp
