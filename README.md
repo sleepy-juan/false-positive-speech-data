@@ -16,26 +16,31 @@ The course project requires you to identify and formulate an SBSE problem and so
 
 ## About the Project
 
-Testing False Positive Speech Recognition Using Evolutionary Algorithms
+>  **Testing False Positive Speech Recognition Using Evolutionary Algorithms**
 
 ### Roadmap and Responsibility
 
 ![Roadmap](./docs/Roadmap.png)
 
 * Plan & Run: **People to whom it may concern**
-* Audio: **Sungwoo**
-* Genetic Algorithm: **Kihoon**, Juan
-* Fitness: **Sungwoo**, Taehyeon
+* Audio: Juan(C++), **Sungwoo(C)**
+* Genetic Algorithm: **Kihoon**
+* Fitness: **Sungwoo(Incomprehensibility)**, Taehyeon, Juan(Interpretability)
 * Human in the Loop: **Taehyeon**, **Hyunchang**
-* Evaluation: **Juan**, Hyunchang, Kihoon
+* Evaluation: **Hyunchang**, Kihoon
 * Coursework: **Everyone**
 * AI Study: Kihoon, Juan, Sungwoo
 
-### Documents
+### Reports
 * [Pitch Presentation](https://docs.google.com/presentation/d/1nxoFEuv6dOUZKpGBUdsLgrT2VprfhpCsEu3w-fz0nt8/edit#slide=id.g656785dafc_4_1)
 * Final Presentation
 * Report
 * Demo
+
+### Documents
+
+* [Coding Style Agreement](https://sleepy-juan.github.io/false-positive-speech-data/StyleGuide.html)
+* [Wav Format Handler Document](https://sleepy-juan.github.io/false-positive-speech-data/WavDoc.html)
 
 ### Collaborator
 > Sorted by Korean alphabetical order
@@ -44,3 +49,32 @@ Testing False Positive Speech Recognition Using Evolutionary Algorithms
 * [Hyunchang Oh](https://github.com/HyunchangOh)
 * [Juan Lee](https://github.com/sleepy-juan)
 * [Sungwoo Jeon](https://github.com/marunero)
+
+## About the Code
+
+The project used many third-party libraries, multiple programming languages, and/or co-working process with diverse code hierarchy. Please thoroughly follow below instructions to run the code in your environment.
+
+### Run and Test Google API
+
+Since Google Speech API does not support C++, we made a python program and export the result through the pipe. 
+
+1. Enable **Google Speech To Text API** at [Google Cloud Platform Console](https://console.cloud.google.com/)
+2. Make and Download **Your Private Key**, we named it `google_api_key.json`
+3. Export your private key for the current session.
+
+```bash
+$ export GOOGLE_APPLICATION_CREDENTIALS="/path/to/google_api_key.json"
+```
+
+4. Install **Python Google Speech Module**
+
+```bash
+$ pip install --upgrade google-cloud-speech
+```
+
+5. Run the code with your audio file (arguments: *filename*and *sample rate*)
+
+```bash
+$ python3 google_api_python.py "path/to/audio_file.wav" 48000
+```
+
