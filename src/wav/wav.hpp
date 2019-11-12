@@ -12,74 +12,28 @@
 #include <string>
 
 /*
-    WavHeader Class
-    - contains wav format header information as attributes
-*/
-class WavHeader
-{
-public:
-    //--------- HEADER ----------
-    /* RIFF Bitstream Format Info */
-    char riff[4];       // "riff"
-    uint32_t riff_size; // overall size of file in bytes
-    char riff_wave[4];  // "wave"
-
-    /* FMT */
-    char fmt[4];              // "fmt "
-    uint32_t fmt_size;        // length of fmt
-    uint16_t audio_format;    // format type. 1-PCM, 3- IEEE float, 6 - 8bit A law, 7 - 8bit mu law
-    uint16_t n_channels;      // # of channels
-    uint32_t sample_rate;     // sample rate (blocks per second)
-    uint32_t avg_byte_rate;   // sample rate * # of channels * bytes per sample
-    uint16_t block_align;     // # of channels * bytes per sample
-    uint16_t bits_per_sample; // bits per sample, 8- 8bits, 16- 16 bits etc
-
-    /* DATA */
-    char data[4];  // "data"
-    uint32_t size; // data size
-};
-
-/*
-    Wav Class
-    - contains wav format file information as attributes
-    - maintains handling methods for wav format file
+    Class Wav
+    
+    This class contains wav format data and methods for manipulation.
 */
 class Wav
 {
 private:
-    WavHeader header;
-
-    //--------- Info ----------
-    std::string filename;
-    std::vector<uint8_t> bytes;
-
-    //--------- Private Methods ----------
-    void load();
-
-    bool isRiffValid();
-    bool isFmtValid();
-    bool isDataValid();
+    uint8_t header[44];        // header info
+    std::vector<uint8_t> data; // data
 
 public:
-    /* constructor & destructor */
-    Wav(std::string filename);
+    Wav(std::string filename); // constructor with open the file
 
-    /* format validity */
-    bool isValid();
+    /* About File */
+    bool valid();                    // check validity
+    void save(std::string filename); // save to the file
 
-    /* getters */
-    uint16_t getChannelSize();
-    uint32_t getSampleRate();
-    uint16_t getSampleSizeInBits();
-    std::vector<uint8_t> &getBytes();
-    uint32_t getSize();
+    /* Set & Get */
+    uint8_t &operator[](int index); // getter & setter
 
-    /* computed variables */
-    uint16_t getSampleSize();
-    unsigned getLengthInSeconds();
-
-    /* write wav */
-    void make(std::string filename);
+    /* Information */
+    unsigned size();
 };
 
 #endif
