@@ -15,7 +15,13 @@ std::mt19937 mersenne(rd());
 std::vector<Fitness> GA::evaluateFitness(std::vector<Wav> &wavs, float gamma){
     // call fitness evaluation function
 
-    std::vector<Fitness> v(wavs.size(), 0);
+    std::vector<Fitness> v(wavs.size(), 1);
+    std::uniform_real_distribution<> prob(0, 1);
+    int sz = wavs.size();
+
+    for(int i = 0;i<sz;i++)
+        v[i] = prob(mersenne);
+
     return v;
 
     // return Fitness(wavs, gamma);
@@ -23,12 +29,34 @@ std::vector<Fitness> GA::evaluateFitness(std::vector<Wav> &wavs, float gamma){
 
 std::vector<uint32_t> GA::select(int poolSize){
 
-    std::vector<uint32_t> mating;
-    mating.clear();
+    std::vector<uint32_t> mating(poolSize);
+    std::uniform_real_distribution<> prob(0, 1);
+    Fitness sumOfFitness = 0, currentFitnessSum = 0;
+    int parentSize = parents.size();
 
-    // to be implemented
-    for(int i=0;i<poolSize;i++)
-        mating.push_back(i);
+    for(int i=0;i<fitnessOfParents.size();i++){
+        sumOfFitness += fitnessOfParents[i];
+    }
+
+    Fitness pin, interval;
+    int poolCount = 0;
+    pin = interval = sumOfFitness / (Fitness) poolSize;
+    pin *= prob(mersenne);
+
+    //std::cout << "\nint " << interval << " pin " << pin << " sum " << sumOfFitness << std::endl;
+
+
+    for(int i=0;i<parentSize;i++){
+        currentFitnessSum += fitnessOfParents[i];
+        while(currentFitnessSum > pin && poolCount < poolSize){
+            mating[poolCount++] = i;
+            pin += interval;
+        }
+    }
+
+    while(poolCount < poolSize){
+        mating[poolCount ++] += parentSize-1;
+    }
 
     return mating;
 }
@@ -55,8 +83,8 @@ Wav GA::crossover(Wav &parent1, Wav &parent2){
 void GA::mutate(Wav &offspring){
 
     // amount of byte to mutate
-    uint32_t mutateLength = 100000;
-    uint8_t mutateAmount = 255;
+    uint32_t mutateLength = 5000;
+    uint8_t mutateAmount = 50;
 
     // set random
     uint32_t wavSize = offspring.size();
@@ -95,7 +123,7 @@ std::vector<Wav>& GA::run(std::vector<Wav>& wavs){
 
     
     // parameters
-    int maxGeneration = 10;
+    int maxGeneration = 50;
     int numPopulation = wavs.size();
     int numMatingPool = 5;
     int numElite = 0;
@@ -109,14 +137,15 @@ std::vector<Wav>& GA::run(std::vector<Wav>& wavs){
     
     // initialize
     parents.assign(wavs.begin(), wavs.end());
-    offsprings.clear();
-    fitnessOfParents.clear();
-    matingPool.clear();
         
     // run ga
     for(int j=1;j<=maxGeneration;j++){
 
         std::cout << "generation: " << j << std::endl;
+
+        offsprings.clear();
+        fitnessOfParents.clear();
+        matingPool.clear();
         
         fitnessOfParents = evaluateFitness(parents, 1);
         
@@ -149,9 +178,6 @@ std::vector<Wav>& GA::run(std::vector<Wav>& wavs){
     
 
         parents.assign(offsprings.begin(), offsprings.end());
-        
-
-       
 
     }
     
