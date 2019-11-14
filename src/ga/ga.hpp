@@ -10,6 +10,7 @@
 #include "../wav/wav.hpp"
 #include <vector>
 
+
 typedef float Fitness;
 
 class GA {
