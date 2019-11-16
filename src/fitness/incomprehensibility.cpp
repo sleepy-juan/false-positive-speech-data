@@ -25,7 +25,7 @@ bool Incomprehensibility::evaluate()
   vector<float> fitness;
 
   for (unsigned int i = 0; i < this->modified.size(); i++){
-    vector<uint8_t> modifiedData = this->modified.at(i).get();
+    // vector<uint8_t> modifiedData = this->modified.at(i).get();
 
     float min_fitness = -1;
 
@@ -34,7 +34,10 @@ bool Incomprehensibility::evaluate()
       filename = originPath + "/original" + to_string(j) + ".wav";
 
       vector<uint8_t> originalData;
-      originalData = Wav(filename).get();
+      // originalData = Wav(filename).get();
+      // if (originalData == NULL){
+      //   return false;
+      // }
     }
 
     /* beta[i]: speechTotext interpretability of modified[i] */
