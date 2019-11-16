@@ -6,7 +6,6 @@
 */
 
 #include <string>
-#include <vector>
 
 #include "../wav/wav.hpp"
 
@@ -21,12 +20,16 @@ class Incomprehensibility
 private:
     Wav &original;
     Wav &modified;
-
+    
+    int sampleRate;
     float _fitness;
     
 public:
     Incomprehensibility(Wav &original, Wav &modified);
-    bool evaluate(); 
+    bool evaluateFitness(); 
 
     float fitness();
+    void changeSample(int newRate);
 };
+
+char biggest(char A, char B, char C);
