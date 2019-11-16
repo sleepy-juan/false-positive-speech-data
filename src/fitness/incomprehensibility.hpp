@@ -19,14 +19,14 @@ using namespace std;
 class Incomprehensibility
 {
 private:
-    int n_originalWave;
-    string originPath;
-    vector<Wav> &modified;
-    vector<float> _fitness;
+    Wav &original;
+    Wav &modified;
 
+    float _fitness;
+    
 public:
-    Incomprehensibility(int n_originalWave, string originPath, vector<Wav> &modified);
+    Incomprehensibility(Wav &original, Wav &modified);
     bool evaluate(); 
 
-    vector<float> fitness();
+    float fitness();
 };

@@ -17,39 +17,20 @@
 
 using namespace std;
 
-Incomprehensibility::Incomprehensibility(int n_originalWave, string originPath, vector<Wav> &modified)
-    : n_originalWave(n_originalWave), originPath(originPath), modified(modified), _fitness(){}
+Incomprehensibility::Incomprehensibility(Wav &original, Wav &modified)
+    : original(original), modified(modified), _fitness(0) {}
 
 bool Incomprehensibility::evaluate()
 {
-  vector<float> fitness;
+  float fitness;
 
-  for (unsigned int i = 0; i < this->modified.size(); i++){
-    // vector<uint8_t> modifiedData = this->modified.at(i).get();
-
-    float min_fitness = -1;
-
-    for (int j = 0; j < this->n_originalWave; j++){
-      string filename;
-      filename = originPath + "/original" + to_string(j) + ".wav";
-
-      vector<uint8_t> originalData;
-      // originalData = Wav(filename).get();
-      // if (originalData == NULL){
-      //   return false;
-      // }
-    }
-
-    /* beta[i]: speechTotext interpretability of modified[i] */
-
-    // beta.at(i) = interpretability(modified.at(i));
-  }
+  
 
   this->_fitness = fitness;
   return true;
 }
 
-vector<float> Incomprehensibility::fitness()
+float Incomprehensibility::fitness()
 {
   return this->_fitness;
 }
