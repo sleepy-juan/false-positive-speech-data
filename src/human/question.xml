@@ -1,0 +1,39 @@
+<HTMLQuestion xmlns="http://mechanicalturk.amazonaws.com/AWSMechanicalTurkDataSchemas/2011-11-11/HTMLQuestion.xsd">
+  <HTMLContent><![CDATA[
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+  <script type='text/javascript' src='https://s3.amazonaws.com/mturk-public/externalHIT_v1.js'></script>
+ </head>
+ <body>
+    <!-- You must include this JavaScript file -->
+    <script src="https://assets.crowd.aws/crowd-html-elements.js"></script>
+
+    <!-- For the full list of available Crowd HTML Elements and their input/output documentation,
+        please refer to https://docs.aws.amazon.com/sagemaker/latest/dg/sms-ui-template-reference.html -->
+
+    <!-- You must include crowd-form so that your task submits answers to MTurk -->
+    <crowd-form answer-format="flatten-objects">
+
+        <h3>Instructions</h3>
+        <p>Transcribe the audio</p>
+        <p>Ignore "umms", "hmms", "uhs" and other non-textual phrases</p>
+
+        <audio controls="">
+
+            <!-- Your audio file URL will be substituted for the "audio_url" variable when
+                you publish a batch with an input file containing multiple audio file URLs -->
+            <source src="${audio_url}" type="audio/wav" />
+
+        </audio>
+
+        <crowd-text-area name="transcription" placeholder="Transcribe the audio here..." rows="4" required></crowd-text-area>
+    </crowd-form>
+  <script language='Javascript'>turkSetAssignmentID();</script>
+ </body>
+</html>
+]]>
+  </HTMLContent>
+  <FrameHeight>450</FrameHeight>
+</HTMLQuestion>

@@ -1,29 +1,32 @@
 /*
     incomprehensibility.hpp
     - incomprehensibility fitness
-    - Calculate the difference of waves
-      under the assumption that the bigger difference the waves are, the more difficult for people to understand
 
-    Algorithm Designed by Sungwoo Jeon
-    Code Written by Juan Lee
+    Created by Sungwoo Jeon
 */
 
-#ifndef __INCOMPREHENSIBILITY_H__
-#define __INCOMPREHENSIBILITY_H__
+#include <string>
 
 #include "../wav/wav.hpp"
 
 /*
-    Class Incomprehensiblity
-    - Human Negative Comprehensiblity
+    Class incomprehensibility
+    - Wave incomprehensibility
 */
 class Incomprehensibility
 {
 private:
+    Wav original;
+    Wav modified;
+    int sampleRate;
+    float _fitness;
+
 public:
-    Incomprehensibility(Wav &wav);
+    Incomprehensibility(Wav &original, Wav &modified);
+    bool evaluateFitness();
+
     float fitness();
-    float normalizedFitness(float minimum, float maximum);
+    void changeSample(int newRate);
 };
 
-#endif
+char smallest(char A, char B, char C);
