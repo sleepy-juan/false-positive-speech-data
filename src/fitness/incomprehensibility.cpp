@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <stdlib.h>
+#include <cmath>
 
 using namespace std;
 
@@ -25,7 +26,7 @@ bool Incomprehensibility::evaluateFitness()
   int numRows = originalData.size() / sampleRate;
   int numCols = modifiedData.size() / sampleRate;
 
-  uint8_t DTW[numRows][numCols] = { 0, };
+  int DTW[numRows][numCols] = { 0, };
 
   /* Fill DTW matrix */
   DTW[0][0] = abs(originalData.at(0) - modifiedData.at(0));
@@ -37,10 +38,40 @@ bool Incomprehensibility::evaluateFitness()
   }
   for (int i = 1; i < numRows; i++){
     for (int j = 1; j < numCols; j++){
-      DTW[i][j] = abs(originalData.at(i * sampleRate) - modifiedData.at(j * sampleRate)) + biggest(DTW[i - 1][j], DTW[i][j - 1], DTW[i - 1][j - 1]);
+      DTW[i][j] = abs(originalData.at(i * sampleRate) - modifiedData.at(j * sampleRate)) + smallest(DTW[i - 1][j], DTW[i][j - 1], DTW[i - 1][j - 1]);
     }
   }
 
+  int i = 0;
+  int j = 0;
+  int verticalPath = 0;
+  int totalPath = 0;
+
+  while (i != numRows && j != numCols){
+    if (DTW[i + 1][j + 1] <= DTW[i + 1][j] && DTW[i + 1][j + 1] <= DTW[i][j + 1]){
+      i += 1;
+      j += 1;
+    }
+    else if (DTW[i][j + 1] <= DTW[i + 1][j + 1] && DTW[i][j + 1] <= DTW[i + 1][j]){
+      if (DTW[i][j + 1] == DTW[i + 1][j] && i < j){
+        i += 1;
+        verticalPath += 1;
+      }
+      else{
+        j += 1;
+        verticalPath += 1;
+      }
+    }
+    else{
+      i += 1;
+      verticalPath += 1;
+    }
+    totalPath += 1;
+  }
+  verticalPath += numRows + numCols - i - j;
+  totalPath += numRows + numCols - i - j;
+  
+  fitness = sqrt((float) verticalPath / (float) totalPath);
 
   this->_fitness = fitness;
   return true;
@@ -56,23 +87,13 @@ void Incomprehensibility::changeSample(int newRate)
   this->sampleRate = newRate;
 }
 
-char biggest(char A, char B, char C)
+char smallest(char a, char b, char c)
 {
-  if (A >= B && A >= C){
-    return A;
+  if (a <= b && a <= c){
+    return a;
   }
-  if (B >= A && B >= C){
-    return B;
+  else if (b <= a && b <= c){
+    return b;
   }
-  return C;
-}
-
-int main()
-{
-  char a = 10;
-  char b = 16;
-
-  std::cout << abs(a-b) << std::endl;
-
-  return 0;
+  return c;
 }

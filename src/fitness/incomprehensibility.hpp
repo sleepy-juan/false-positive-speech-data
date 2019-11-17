@@ -1,6 +1,6 @@
 /*
     incomprehensibility.hpp
-    - incimprehensibility fitness
+    - incomprehensibility fitness
 
     Created by Sungwoo Jeon
 */
@@ -9,8 +9,6 @@
 
 #include "../wav/wav.hpp"
 
-using namespace std;
-
 /*
     Class incomprehensibility
     - Wave incomprehensibility
@@ -18,9 +16,8 @@ using namespace std;
 class Incomprehensibility
 {
 private:
-    Wav &original;
-    Wav &modified;
-    
+    Wav original;
+    Wav modified;
     int sampleRate;
     float _fitness;
     
@@ -32,4 +29,4 @@ public:
     void changeSample(int newRate);
 };
 
-char biggest(char A, char B, char C);
+char smallest(char A, char B, char C);
