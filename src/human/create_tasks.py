@@ -10,7 +10,7 @@ mturk = boto3.client('mturk',
 question = open(name='question.xml',mode='r').read()
 new_hit = mturk.create_hit(
     Title = 'Could you interpret the following audio?',
-    Description = 'What can you hear from this audio?',
+    Description = 'What can you hear something from this audio?',
     Keywords = 'audio, interpret',
     Reward = '0.01',
     MaxAssignments = 1,
