@@ -31,10 +31,10 @@ bool Incomprehensibility::evaluateFitness()
   // int DTW[numRows][numCols] = { 0, };
   int **DTW = new int* [numRows]; 
   for(int i = 0; i < numRows; ++i) { 
-    DTW[i] = new int[numRows]; 
+    DTW[i] = new int[numCols]; 
     memset(DTW[i], 0, sizeof(int)* numCols);
   } 
-  
+
   /* Fill DTW matrix */
   DTW[0][0] = abs(originalData.at(0) - modifiedData.at(0));
   for (int i = 1; i < numRows; i++)
