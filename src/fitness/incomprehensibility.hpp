@@ -20,10 +20,10 @@ private:
     Wav modified;
     int sampleRate;
     float _fitness;
-    
+
 public:
     Incomprehensibility(Wav &original, Wav &modified);
-    bool evaluateFitness(); 
+    bool evaluateFitness();
 
     float fitness();
     void changeSample(int newRate);
