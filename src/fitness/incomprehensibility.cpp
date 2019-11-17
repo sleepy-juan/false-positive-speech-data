@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <stdlib.h>
+#include <string.h>
 #include <cmath>
 
 using namespace std;
@@ -26,8 +27,13 @@ bool Incomprehensibility::evaluateFitness()
   int numRows = originalData.size() / sampleRate;
   int numCols = modifiedData.size() / sampleRate;
 
-  int DTW[numRows][numCols] = { 0, };
-
+  /* Allocate DTW matrix memory */
+  // int DTW[numRows][numCols] = { 0, };
+  int **DTW = new int* [numRows]; 
+  for(int i = 0; i < numRows; ++i) { 
+    DTW[i] = new int[numRows]; 
+    memset(DTW[i], 0, sizeof(int)* numCols);
+  } 
   /* Fill DTW matrix */
   DTW[0][0] = abs(originalData.at(0) - modifiedData.at(0));
   for (int i = 1; i < numRows; i++){
@@ -74,6 +80,13 @@ bool Incomprehensibility::evaluateFitness()
   fitness = sqrt((float) verticalPath / (float) totalPath);
 
   this->_fitness = fitness;
+
+  /* free memory for DTW matrix */
+  for (int i = 0; i < numRows; ++i) { 
+    delete [] DTW[i]; 
+  } 
+  delete [] DTW;
+
   return true;
 }
 
