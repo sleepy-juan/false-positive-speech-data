@@ -21,14 +21,19 @@
 class Fitness
 {
 private:
-    Wav wav1;
-    Wav wav2;
-    float ratio;
+    std::vector<Wav> originals;
+    float _fitness;
+    float gamma;
+    int sampleRate;
+    std::string path_to_apikey;
+    std::string path_to_python;
 
 public:
-    Fitness(Wav &wav1, Wav &wav2, float ratio);
-    bool evaluate();
-
+    Fitness(std::vector<Wav>& originals);
+    bool evaluate(Wav &wav, float gamma);
+    void changeGamma(float newGamma);
+    void changeRate(int newRate);
+    float fitness();
 };
 
 #endif
