@@ -69,6 +69,8 @@ float bitwiseAverageDifference(std::string org_filename,  std::string mod_filena
 
 /*
     finds the edit distance between the inputs.
+    only works for very short files due to extremely high space complexity
+    uses 'sample rate' to reduce space complexity
 */
 int editDistance(std::string org_filename,  std::string mod_filename)
 {
@@ -77,17 +79,18 @@ int editDistance(std::string org_filename,  std::string mod_filename)
 
     Wav wav2(mod_filename);
     std::vector<uint8_t> modified = wav2.get();
+    int sampleRate=500;
 
-    int numRows = original.size();
-    int numCols = modified.size();
-
+    int numRows = original.size()/sampleRate;
+    int numCols = modified.size()/sampleRate;
+    std::cout << numRows << std::endl;
     int ED[numRows][numCols];
-    
+    std::cout << numRows << std::endl;
     for(int i=0; i<=numRows; i++){
         for(int j=0; j<=numCols; j++){
             if(i==0)ED[i][j]=j;
             else if(j==0) ED[i][j]=i;
-            else if(original[i-1]==modified[j-1]){
+            else if(original[(i-1)*sampleRate]==modified[(j-1)*sampleRate]){
                 ED[i][j]=ED[i-1][j-1];
             }
             else{
