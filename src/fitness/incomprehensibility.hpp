@@ -7,6 +7,7 @@
 */
 
 #include <string>
+#include <vector>
 
 #include "../wav/wav.hpp"
 
@@ -20,14 +21,15 @@
 class Incomprehensibility
 {
 private:
-    Wav original;
+    std::vector<Wav> originals;
     Wav modified;
     float _fitness;
 
     char smallest(char A, char B, char C);
+    bool evaluateFitness(int sampleRate, Wav &origina);
 
 public:
-    Incomprehensibility(Wav &original, Wav &modified);
+    Incomprehensibility(std::vector<Wav> &originals, Wav &modified);
     bool evaluate(int sampleRate);
 
     float fitness();
