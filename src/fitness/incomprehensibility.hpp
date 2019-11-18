@@ -22,15 +22,14 @@ class Incomprehensibility
 {
 private:
     std::vector<Wav> originals;
-    Wav modified;
     float _fitness;
 
     char smallest(char A, char B, char C);
-    bool evaluateFitness(int sampleRate, Wav &origina);
+    bool evaluateFitness(int sampleRate, Wav &original, Wav &modified);
 
 public:
-    Incomprehensibility(std::vector<Wav> &originals, Wav &modified);
-    bool evaluate(int sampleRate);
+    Incomprehensibility(std::vector<Wav> &originals);
+    bool evaluate(int sampleRate, Wav &modified);
 
     float fitness();
 };

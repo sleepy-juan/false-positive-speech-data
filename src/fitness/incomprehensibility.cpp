@@ -14,10 +14,10 @@
 
 using namespace std;
 
-Incomprehensibility::Incomprehensibility(std::vector<Wav> &originals, Wav &modified)
-    : originals(originals), modified(modified), _fitness(0) {}
+Incomprehensibility::Incomprehensibility(std::vector<Wav> &originals)
+    : originals(originals), _fitness(0) {}
 
-bool Incomprehensibility::evaluateFitness(int sampleRate, Wav &original)
+bool Incomprehensibility::evaluateFitness(int sampleRate, Wav &original, Wav &modified)
 {
   float fitness = 0;
 
@@ -104,11 +104,11 @@ bool Incomprehensibility::evaluateFitness(int sampleRate, Wav &original)
   return true;
 }
 
-bool Incomprehensibility::evaluate(int sampleRate)
+bool Incomprehensibility::evaluate(int sampleRate, Wav &modified)
 {
   for (Wav original : this->originals)
   {
-    bool success = this->evaluateFitness(sampleRate, original);
+    bool success = this->evaluateFitness(sampleRate, original, modified);
     if (!success)
       return false;
   }
