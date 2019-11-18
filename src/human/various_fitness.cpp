@@ -19,37 +19,37 @@
 
 using namespace std;
 
-
-float bitwiseAverageDifference(std::string org_filename,  std::string mod_filename); 
-int editDistance(std::string org_filename,  std::string mod_filename);
+float bitwiseAverageDifference(std::string org_filename, std::string mod_filename);
+int editDistance(std::string org_filename, std::string mod_filename);
 
 //testbed for trying out new functions.
 int main(int argc, char **argv)
 {
     Wav wav("../../audio/original/weather.wav");
     std::vector<uint8_t> v = wav.get();
-    if(wav.valid())
+    if (wav.valid())
     {
-        std::cout << "wav valid!" << std::endl; 
+        std::cout << "wav valid!" << std::endl;
     }
-    else{
+    else
+    {
         std::cout << "Unable to open" << std::endl;
         return -1;
     }
-    int answer = editDistance("../../audio/original/weather.wav", "../../audio/original/weather2.wav");
+    int answer = editDistance("../../audio/original/weather.wav", "../../audio/modified/copied.wav");
     std::cout << answer << std::endl;
 }
 
-int min(int x, int y, int z) 
-{ 
-    return min(min(x, y), z); 
-} 
-  
+int min(int x, int y, int z)
+{
+    return min(min(x, y), z);
+}
+
 /*
     Calculates the average of all bitwise differences.
     Assume two input files are of equal length.
 */
-float bitwiseAverageDifference(std::string org_filename,  std::string mod_filename)
+float bitwiseAverageDifference(std::string org_filename, std::string mod_filename)
 {
     Wav wav(org_filename);
     std::vector<uint8_t> original = wav.get();
@@ -60,45 +60,68 @@ float bitwiseAverageDifference(std::string org_filename,  std::string mod_filena
     float numRows = original.size();
 
     float average = 0;
-    for(int i=0; i<numRows; i++){
-        average+= abs(original.at(i) - modified.at(i))/numRows;
+    for (int i = 0; i < numRows; i++)
+    {
+        average += abs(original.at(i) - modified.at(i)) / numRows;
     }
     return average;
 }
-
 
 /*
     finds the edit distance between the inputs.
     only works for very short files due to extremely high space complexity
     uses 'sample rate' to reduce space complexity
 */
-int editDistance(std::string org_filename,  std::string mod_filename)
+int editDistance(std::string org_filename, std::string mod_filename)
 {
     Wav wav(org_filename);
     std::vector<uint8_t> original = wav.get();
 
     Wav wav2(mod_filename);
     std::vector<uint8_t> modified = wav2.get();
-    int sampleRate=500;
+    int sampleRate = 1;
 
-    int numRows = original.size()/sampleRate;
-    int numCols = modified.size()/sampleRate;
+    int numRows = original.size() / sampleRate;
+    int numCols = modified.size() / sampleRate;
     std::cout << numRows << std::endl;
-    int ED[numRows][numCols];
+
+    // allocate
+    int **ED = new int *[numRows];
+    for (int i = 0; i < numRows; i++)
+    {
+        ED[i] = new int[numCols];
+    }
+
     std::cout << numRows << std::endl;
-    for(int i=0; i<=numRows; i++){
-        for(int j=0; j<=numCols; j++){
-            if(i==0)ED[i][j]=j;
-            else if(j==0) ED[i][j]=i;
-            else if(original[(i-1)*sampleRate]==modified[(j-1)*sampleRate]){
-                ED[i][j]=ED[i-1][j-1];
+    for (int i = 0; i <= numRows; i++)
+    {
+        for (int j = 0; j <= numCols; j++)
+        {
+            if (i == 0)
+                ED[i][j] = j;
+            else if (j == 0)
+                ED[i][j] = i;
+            else if (original[(i - 1) * sampleRate] == modified[(j - 1) * sampleRate])
+            {
+                ED[i][j] = ED[i - 1][j - 1];
             }
-            else{
-                ED[i][j] = 1 + min(ED[i][j-1],  // Insert 
-                                   ED[i-1][j],  // Remove 
-                                   ED[i-1][j-1]); // Replace 
+            else
+            {
+                ED[i][j] = 1 + min(ED[i][j - 1],      // Insert
+                                   ED[i - 1][j],      // Remove
+                                   ED[i - 1][j - 1]); // Replace
             }
         }
     }
-    return ED[numRows][numCols];
+
+    int result = ED[numRows][numCols];
+
+    // free
+    for (int i = 0; i < numRows; i++)
+    {
+        delete[] ED[i];
+    }
+    delete[] ED;
+
+    return result;
 }
