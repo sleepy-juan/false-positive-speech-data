@@ -1,6 +1,12 @@
+# Dummy Files
 .DS_Store
 *.DS_Store
 */*.DS_Store
 .vscode
 
+# Credential
 google_api_key.json
+
+# non-cross platform executable files
+*.exe
+*/*.exe
