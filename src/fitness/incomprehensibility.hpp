@@ -3,11 +3,15 @@
     - incomprehensibility fitness
 
     Created by Sungwoo Jeon
+    Modified by Juan Lee
 */
 
 #include <string>
 
 #include "../wav/wav.hpp"
+
+#ifndef __INCOMPREHENSIBILITY_HPP__
+#define __INCOMPREHENSIBILITY_HPP__
 
 /*
     Class incomprehensibility
@@ -18,15 +22,15 @@ class Incomprehensibility
 private:
     Wav original;
     Wav modified;
-    int sampleRate;
     float _fitness;
+
+    char smallest(char A, char B, char C);
 
 public:
     Incomprehensibility(Wav &original, Wav &modified);
-    bool evaluateFitness();
+    bool evaluate(int sampleRate);
 
     float fitness();
-    void changeSample(int newRate);
 };
 
-char smallest(char A, char B, char C);
+#endif

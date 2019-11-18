@@ -15,9 +15,9 @@
 using namespace std;
 
 Incomprehensibility::Incomprehensibility(Wav &original, Wav &modified)
-    : original(original), modified(modified), sampleRate(200), _fitness(0) {}
+    : original(original), modified(modified), _fitness(0) {}
 
-bool Incomprehensibility::evaluateFitness()
+bool Incomprehensibility::evaluate(int sampleRate)
 {
   float fitness = 0;
 
@@ -29,11 +29,12 @@ bool Incomprehensibility::evaluateFitness()
 
   /* Allocate DTW matrix memory */
   // int DTW[numRows][numCols] = { 0, };
-  int **DTW = new int* [numRows]; 
-  for(int i = 0; i < numRows; ++i) { 
-    DTW[i] = new int[numCols]; 
-    memset(DTW[i], 0, sizeof(int)* numCols);
-  } 
+  int **DTW = new int *[numRows];
+  for (int i = 0; i < numRows; ++i)
+  {
+    DTW[i] = new int[numCols];
+    memset(DTW[i], 0, sizeof(int) * numCols);
+  }
 
   /* Fill DTW matrix */
   DTW[0][0] = abs(originalData.at(0) - modifiedData.at(0));
@@ -93,10 +94,11 @@ bool Incomprehensibility::evaluateFitness()
   this->_fitness = fitness;
 
   /* free memory for DTW matrix */
-  for (int i = 0; i < numRows; ++i) { 
-    delete [] DTW[i]; 
-  } 
-  delete [] DTW;
+  for (int i = 0; i < numRows; ++i)
+  {
+    delete[] DTW[i];
+  }
+  delete[] DTW;
 
   return true;
 }
@@ -106,12 +108,7 @@ float Incomprehensibility::fitness()
   return this->_fitness;
 }
 
-void Incomprehensibility::changeSample(int newRate)
-{
-  this->sampleRate = newRate;
-}
-
-char smallest(char a, char b, char c)
+char Incomprehensibility::smallest(char a, char b, char c)
 {
   if (a <= b && a <= c)
   {
