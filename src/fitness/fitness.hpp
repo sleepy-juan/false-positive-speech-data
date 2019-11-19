@@ -30,7 +30,7 @@ private:
 
 public:
     Fitness(std::vector<Wav>& originals);
-    bool evaluate(Wav &wav, float gamma);
+    bool evaluate(Wav &wav);
     void changeGamma(float newGamma);
     void changeRate(int newRate);
     float fitness();
