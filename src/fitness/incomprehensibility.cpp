@@ -59,7 +59,7 @@ bool Incomprehensibility::evaluateFitness(int sampleRate, Wav &original, Wav &mo
   int verticalPath = 0;
   int totalPath = 0;
 
-  while (i != numRows && j != numCols)
+  while (i != (numRows - 1) && j != (numCols) - 1)
   {
     if (DTW[i + 1][j + 1] <= DTW[i + 1][j] && DTW[i + 1][j + 1] <= DTW[i][j + 1])
     {
