@@ -7,8 +7,10 @@
 #ifndef __GA_HPP__
 #define __GA_HPP__
 
+#include "../fitness/incomprehensibility.hpp"
 #include "../wav/wav.hpp"
 #include <vector>
+#include <random>
 
 
 typedef float Fitness;
@@ -33,17 +35,47 @@ public:
         MUTATE_SWAP
     };
 
-    std::vector<Wav>& run(std::vector<Wav>& wavs, selection_operator op1, crossover_operator op2, float crossoverRate,\
-                         mutation_operator op3, float mutationRate);
+    std::vector<Wav>& run();
+
+    GA(std::vector<Wav>& wavs, selection_operator op1, crossover_operator op2, float crossoverRate, \
+                        mutation_operator op3, float mutationRate);
+
+    ~GA();
 
 private:
 
+    /* parameters */
+    int maxGeneration;
+    int numPopulation;
+    int numMatingPool;
+    int numElite;
+
+    /* fitness evaluation */
+    Incomprehensibility* fitfunc;
+    Fitness sumOfFitness;
+
+    /* selection */
+    selection_operator opSelect;
+
+    /* crossover*/
+    crossover_operator opCross;
+    float crossoverRate;
+
+    /* mutation */
+    mutation_operator opMutate;
+    float mutationRate;
+
+    /* private vectors */
+    std::vector<Wav> parents;                       // Wav vector for parent
+    std::vector<Fitness> fitnessOfParents;          // Fitness vector of each corresponding parent
+    std::vector<uint32_t> matingPool;               // Selected parents' index by selection algorithm
+    std::vector<Wav> offsprings;                    // Wav vector made by parents(crossover, mutation, etc)
 
     /* private method */
-    std::vector<Fitness> evaluateFitness(std::vector<Wav> &wavs, float gamma);
-    std::vector<uint32_t> select(int poolSize, selection_operator op);
-    Wav crossover(Wav &parent1, Wav &parent2, crossover_operator op, float rate);
-    void mutate(Wav &offspring, mutation_operator op);
+    void evaluateFitness();
+    void select();
+    void crossover(int p1, int p2);
+    void mutate(Wav &offspring, mutation_operator op, float rate);
 
     //std::vector<Wav> nonDominatedSort();
     //std::vector<Wav> crowdingDistanceSort(std::vector<Wav>& sorted);

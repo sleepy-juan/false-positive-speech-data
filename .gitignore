@@ -10,3 +10,9 @@ google_api_key.json
 # non-cross platform executable files
 *.exe
 */*.exe
+*.o
+main
+Makefile
+
+# modified audio
+audio/modified

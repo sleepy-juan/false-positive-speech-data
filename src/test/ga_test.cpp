@@ -5,24 +5,40 @@
 
 int main(int argc, char ** argv){
 
-    std::string bpath = "../../audio/original/weather.wav";
+    std::string bpath = "../../audio/original/";
     std::string apath = "../../audio/modified/ga/";
-    GA *ga;
 
     std::vector<Wav> wavs;
+    int parentsSize = 20;
 
-    for(int i=0;i<5;i++){
-        Wav wav(bpath);
+    for(int i=1;i<=parentsSize;i++){
+        Wav wav(bpath + std::to_string(i) + std::string(".wav"));
         wavs.push_back(wav);
     }
 
 
-    int param1=0, param2=0, param4=0; 
+    /*
+        param1: selection algorithm
+        enum SELECT_ROULETTE, SELECT_SUS
+
+        param2: crossover operator
+        enum CROSS_ONE_POINT, CROSS_UNIFORM, CROSS_ARITHMETIC
+
+        param3: crossover rate
+        float 0 ~ 1
+
+        param4: mutation opertor
+        enum MUTATE_ADD_OR_SUB, MUTATE_SWAP
+        
+        param5: mutation rate
+        float 0 ~ 1 
+    */
+
+    int param1=1, param2=0, param4=0; 
     float param3=0.8, param5=0.1;
     
 
     if(argc == 6){
-
         int param1 = atoi(argv[1]);
         int param2 = atoi(argv[2]);
         float param3 = atof(argv[3]);
@@ -33,14 +49,6 @@ int main(int argc, char ** argv){
         std::cout << "parameter rule not matched. use default\n";
     }
 
-
-
-
-    /*
-        param1: selection algorithm
-        param2: crossover operator
-        param3: crossover rate
-    */
 
     std::string selections[] = {"SELECT_ROULETTE", "SELECT_SUS"};
     std::string crossovers[] = {"CROSS_ONE_POINT", "CROSS_UNIFORM", "CROSS_ARITHMETIC"};
@@ -54,11 +62,14 @@ int main(int argc, char ** argv){
     std::cout << "     rate: " << param5 << std::endl;
     std::cout << "##########################" << std::endl;
 
-    std::vector<Wav>& ret = ga->run(wavs, (GA::selection_operator) param1, (GA::crossover_operator) param2, param3, \
+    GA ga(wavs, (GA::selection_operator) param1, (GA::crossover_operator) param2, param3, \
                                 (GA::mutation_operator) param4, param5);
 
-    for(int i=0;i<5;i++){
-        ret[i].save(apath + std::to_string(i) + std::string(".wav"));
+
+    std::vector<Wav>& ret = ga.run();
+
+    for(int i=1;i<=parentsSize;i++){
+        ret[i-1].save(apath + std::to_string(i) + std::string(".wav"));
     }
 
     return 0;
