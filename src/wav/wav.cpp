@@ -27,8 +27,27 @@ Wav::Wav(std::string filename)
     fin.close();
 }
 
-bool Wav::valid()
+bool Wav::valid(bool debug)
 {
+    if (debug)
+    {
+        std::cout << "RIFF: ";
+        std::cout.write((char *)this->header, 4);
+        std::cout << std::endl;
+
+        std::cout << "WAVE: ";
+        std::cout.write((char *)(this->header + 8), 4);
+        std::cout << std::endl;
+
+        std::cout << "fmt : ";
+        std::cout.write((char *)(this->header + 12), 4);
+        std::cout << std::endl;
+
+        std::cout << "data: ";
+        std::cout.write((char *)(this->header + 36), 4);
+        std::cout << std::endl;
+    }
+
     return strncmp("RIFF", (char *)this->header, 4) == 0 &&
            strncmp("WAVE", (char *)(this->header + 8), 4) == 0 &&
            strncmp("fmt ", (char *)(this->header + 12), 4) == 0 &&
@@ -58,7 +77,8 @@ const std::vector<uint8_t> &Wav::get()
 
 void Wav::set(std::vector<uint8_t> data)
 {
-    this->data.assign(data.begin(), data.end());
+    this->data = data; // Does this work?
+    *(unsigned *)(this->header + 40) = data.size();
 }
 
 void Wav::clear()
@@ -67,22 +87,6 @@ void Wav::clear()
     {
         this->data[i] = 0;
     }
-}
-
-std::vector<uint8_t> Wav::range(int start, int end)
-{
-    std::vector<uint8_t>::const_iterator first = this->data.begin() + start;
-    std::vector<uint8_t>::const_iterator last = this->data.begin() + end;
-
-    return std::vector<uint8_t>(first, last);
-}
-
-void Wav::replace(int start, std::vector<uint8_t> v)
-{
-    if (start < 0)
-        start += this->data.size();
-    std::vector<uint8_t>::iterator first = this->data.begin() + start;
-    std::copy(v.begin(), v.end(), first);
 }
 
 unsigned Wav::size()
@@ -95,7 +99,27 @@ std::string Wav::filename()
     return this->_filename;
 }
 
+short Wav::numberOfChannel()
+{
+    return *(short *)(this->header + 22);
+}
+
 unsigned Wav::sampleRate()
 {
     return *(unsigned *)(this->header + 24);
+}
+
+unsigned Wav::byteRate()
+{
+    return *(unsigned *)(this->header + 28);
+}
+
+short Wav::blockAlign()
+{
+    return *(short *)(this->header + 32);
+}
+
+short Wav::bitPerSample()
+{
+    return *(short *)(this->header + 34);
 }

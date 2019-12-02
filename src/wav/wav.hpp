@@ -27,21 +27,23 @@ public:
     Wav(std::string filename); // constructor with open the file
 
     /* About File */
-    bool valid();                    // check validity
+    bool valid(bool debug = false);  // check validity
     void save(std::string filename); // save to the file
 
     /* Set & Get */
-    uint8_t &operator[](int index);                  // getter & setter
-    const std::vector<uint8_t> &get();               // get all
-    void set(std::vector<uint8_t> data);             // set all
-    void clear();                                    // clear all
-    std::vector<uint8_t> range(int start, int end);  // range [start, end) - end is not included
-    void replace(int start, std::vector<uint8_t> v); // replace the data with given vector starting from start
+    uint8_t &operator[](int index);      // getter & setter
+    const std::vector<uint8_t> &get();   // get all
+    void set(std::vector<uint8_t> data); // set all
+    void clear();                        // clear all
 
     /* Information */
     unsigned size();
     std::string filename();
+    short numberOfChannel();
     unsigned sampleRate();
+    unsigned byteRate();
+    short blockAlign();
+    short bitPerSample();
 };
 
 #endif
