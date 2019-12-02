@@ -24,8 +24,9 @@ bool Incomprehensibility::evaluateFitness(int sampleRate, Wav &original, Wav &mo
   vector<uint8_t> originalData = original.get();
   vector<uint8_t> modifiedData = modified.get();
 
-  int numRows = originalData.size() / sampleRate;
-  int numCols = modifiedData.size() / sampleRate;
+
+  int numRows = originalData.size() / 2 / sampleRate;
+  int numCols = modifiedData.size() / 2 / sampleRate;
 
   /* Allocate DTW matrix memory */
   // int DTW[numRows][numCols] = { 0, };
@@ -37,20 +38,20 @@ bool Incomprehensibility::evaluateFitness(int sampleRate, Wav &original, Wav &mo
   }
 
   /* Fill DTW matrix */
-  DTW[0][0] = abs(originalData.at(0) - modifiedData.at(0));
+  DTW[0][0] = abs((originalData.at(0)*256 + originalData.at(1)) - (originalData.at(0)*256 + modifiedData.at(1)));
   for (int i = 1; i < numRows; i++)
   {
-    DTW[i][0] = DTW[i - 1][0] + abs(originalData.at(i * sampleRate) - modifiedData.at(0));
+    DTW[i][0] = DTW[i - 1][0] + abs(originalData.at(i*sampleRate)*256 + originalData.at(i*sampleRate + 1) - modifiedData.at(0)*256 - modifiedData.at(1));
   }
   for (int j = 1; j < numCols; j++)
   {
-    DTW[0][j] = DTW[0][j - 1] + abs(modifiedData.at(j * sampleRate) - originalData.at(0));
+    DTW[0][j] = DTW[0][j - 1] + abs(modifiedData.at(j*sampleRate)*256 + modifiedData.at(j*sampleRate + 1) - originalData.at(0)*256 - originalData.at(1));
   }
   for (int i = 1; i < numRows; i++)
   {
     for (int j = 1; j < numCols; j++)
     {
-      DTW[i][j] = abs(originalData.at(i * sampleRate) - modifiedData.at(j * sampleRate)) + smallest(DTW[i - 1][j], DTW[i][j - 1], DTW[i - 1][j - 1]);
+      DTW[i][j] = abs(originalData.at(i * sampleRate)*256 + originalData.at(i*sampleRate + 1) - modifiedData.at(j * sampleRate)*256 - modifiedData.at(j*sampleRate + 1)) + smallest(DTW[i - 1][j], DTW[i][j - 1], DTW[i - 1][j - 1]);
     }
   }
 
