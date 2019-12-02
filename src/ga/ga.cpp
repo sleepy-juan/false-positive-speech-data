@@ -20,7 +20,7 @@ void GA::evaluateFitness(){
         
         this->sumOfFitness += this->fitnessOfParents[i];
 
-        printf("fitness%d : %f\n", i, this->fitnessOfParents[i]);
+        //printf("fitness%d : %f\n", i, this->fitnessOfParents[i]);
     }
 
 }
@@ -95,8 +95,9 @@ void GA::crossover(int parent1, int parent2){
     std::vector<uint8_t> wav2 = this->parents[parent2].get();
     std::vector<uint8_t> child;
 
-    int wav1Size = wav1.size();
-    int wav2Size = wav2.size();
+    int bps = this->parents[parent1].bitPerSample();
+    int wav1Size = wav1.size() / bps;
+    int wav2Size = wav2.size() / bps;
 
     int wav1Point, wav2Point;
     Wav w1(this->parents[parent1].filename());
@@ -117,27 +118,44 @@ void GA::crossover(int parent1, int parent2){
             child.clear();
 
             for(int i=0;i<wav1Point;i++)
-                child.push_back(wav1[i]);
+                for(int j=0;j<bps;j++)
+                    child.push_back(wav1[bps*i + j]);
+            
             for(int i=wav1Point;i<wav1Size;i++)
-                child.push_back(wav2[(int) (i * wav2Size / wav1Size)]);
-
+                for(int j=0;j<bps;j++){
+                    int idx = (int) (i * wav2Size / wav1Size) * bps + j;
+                    if(idx < wav2.size())
+                        child.push_back(wav2[idx]);
+                    else
+                        child.push_back(0);
+                }
 
             w1.set(child);
-
-            this->offsprings.push_back(w1);
+            
+            if(w1.valid())
+                this->offsprings.push_back(w1);
 
             if(this->offsprings.size() < this->numPopulation - this->numElite){
 
                 child.clear();
 
                 for(int i=0;i<wav2Point;i++)
-                    child.push_back(wav2[i]);
+                    for(int j=0;j<bps;j++)
+                        child.push_back(wav2[bps*i + j]);
+
                 for(int i=wav2Point;i<wav2Size;i++)
-                    child.push_back(wav1[(int) (i * wav1Size / wav2Size)]);
+                    for(int j=0;j<bps;j++){
+                        int idx = (int) (i * wav1Size / wav2Size) * bps + j;
+                        if(idx < wav1.size())
+                            child.push_back(wav1[idx]);
+                        else
+                            child.push_back(0);
+                    }
 
                 w2.set(child);
-
-                this->offsprings.push_back(w2);
+                
+                if(w2.valid())
+                    this->offsprings.push_back(w2);
             }
 
             break;
@@ -206,9 +224,9 @@ GA::GA(std::vector<Wav>& wavs, selection_operator op1, crossover_operator op2, f
                         mutation_operator op3, float mutationRate){
 
     /* parameter */
-    this->maxGeneration = 1;
+    this->maxGeneration = 10;
     this->numPopulation = wavs.size();
-    this->numMatingPool = 5;
+    this->numMatingPool = 10;
     this->numElite = 0;
 
     /* fitness evaluation */
@@ -280,6 +298,7 @@ std::vector<Wav>& GA::run(){
                 p2 = mate(mersenne);
             }while(p1 == p2);
             
+            printf("%d %d crossover\n", p1, p2);
             this->crossover(this->matingPool[p1], this->matingPool[p2]);
         }
 
