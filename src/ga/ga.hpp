@@ -64,6 +64,8 @@ private:
     /* mutation */
     mutation_operator opMutate;
     float mutationRate;
+    uint8_t mutateAmount;
+
 
     /* private vectors */
     std::vector<Wav> parents;                       // Wav vector for parent
@@ -75,7 +77,7 @@ private:
     void evaluateFitness();
     void select();
     void crossover(int p1, int p2);
-    void mutate(Wav &offspring, mutation_operator op, float rate);
+    void mutate(Wav &offspring);
 
     //std::vector<Wav> nonDominatedSort();
     //std::vector<Wav> crowdingDistanceSort(std::vector<Wav>& sorted);

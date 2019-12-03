@@ -169,41 +169,46 @@ void GA::crossover(int parent1, int parent2){
     //std::cout << "size: " << w2.get().size() << std::endl;
 }
 
-void GA::mutate(Wav &offspring, mutation_operator op, float rate){
+void GA::mutate(Wav &offspring){
 
     // amount of byte to mutate
     //uint32_t mutateLength = 5000;
-    uint8_t mutateAmount = 10;
 
     // set random
-    uint32_t wavSize = offspring.size();
     //std::uniform_int_distribution<> byte(0, wavSize-mutateLength-1);
 
     std::uniform_real_distribution<> mrate(0, 1);
-    std::uniform_int_distribution<> addorsub(0, 1);                     // 0: addition & 1: substraction
+    std::uniform_int_distribution<> addorsub(0, 1);     // 0: addition & 1: substraction
 
     // find location to mutate
     //uint32_t locationToMutate = byte(mersenne);
     std::vector<uint8_t> mutant = offspring.get();
+    std::vector<uint8_t> backup = offspring.get();
+    int bps = offspring.bitPerSample();
+    int wavSize = mutant.size() / bps;
 
-    switch(op){
+    switch(this->opMutate){
         case MUTATE_SWAP:
             // to be implemented
         case MUTATE_ADD_OR_SUB:
             // add or subtract small amount of integer
             for(int i=0;i<wavSize;i++){
                 float doRate = mrate(mersenne);
-                if(rate < doRate){
+                if(this->mutationRate > doRate){
                     if(addorsub(mersenne)==0){
-                        if(mutant[i] + mutateAmount > mutant[i])
-                            mutant[i] = mutant[i] + mutateAmount;
-                        else
-                            mutant[i] = UINT8_MAX;   
+                        for(int j=0;j<bps;j++){
+                            if(mutant[i*bps + j] + this->mutateAmount > mutant[i*bps + j])
+                                mutant[i*bps + j] = mutant[i*bps + j] + this->mutateAmount;
+                            else
+                                mutant[i*bps + j] = UINT8_MAX;
+                        }
                     }else{
-                        if(mutant[i] - mutateAmount < mutant[i])
-                            mutant[i] = mutant[i] - mutateAmount;
-                        else
-                            mutant[i] = 0;   
+                        for(int j=0;j<bps;j++){
+                            if(mutant[i*bps + j] - this->mutateAmount < mutant[i*bps + j])
+                                mutant[i*bps + j] = mutant[i*bps + j] - this->mutateAmount;
+                            else
+                                mutant[i*bps + j] = 0;
+                        } 
                     }
 
                 }
@@ -216,6 +221,9 @@ void GA::mutate(Wav &offspring, mutation_operator op, float rate){
         
     // mutate
     offspring.set(mutant);
+    
+    if(!offspring.valid())
+        offspring.set(backup);
 
 
 }
@@ -243,6 +251,7 @@ GA::GA(std::vector<Wav>& wavs, selection_operator op1, crossover_operator op2, f
     /* mutation*/
     this->opMutate = op3;
     this->mutationRate = mutationRate;
+    this->mutateAmount = 10;
 
     /* vector initialize */
     this->parents.assign(wavs.begin(), wavs.end());
@@ -298,7 +307,6 @@ std::vector<Wav>& GA::run(){
                 p2 = mate(mersenne);
             }while(p1 == p2);
             
-            printf("%d %d crossover\n", p1, p2);
             this->crossover(this->matingPool[p1], this->matingPool[p2]);
         }
 
@@ -306,10 +314,10 @@ std::vector<Wav>& GA::run(){
     //     // elitism - to be implemented
         
         
-    //     // mutation
-    //     for(int i=0;i<this->numPopulation;i++){
-    //         mutate(offsprings[i], op3, mutationRate);
-    //     }
+         // mutation
+         for(int i=0;i<this->numPopulation;i++){
+             mutate(this->offsprings[i]);
+         }
     
 
         this->parents.assign(this->offsprings.begin(), this->offsprings.end());
