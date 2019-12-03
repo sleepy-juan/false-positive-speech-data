@@ -10,8 +10,6 @@
 #include "../fitness/incomprehensibility.hpp"
 #include "../wav/wav.hpp"
 #include <vector>
-#include <random>
-
 
 typedef float Fitness;
 
@@ -37,8 +35,7 @@ public:
 
     std::vector<Wav>& run();
 
-    GA(std::vector<Wav>& wavs, selection_operator op1, crossover_operator op2, float crossoverRate, \
-                        mutation_operator op3, float mutationRate);
+    GA(std::vector<Wav>& wavs);
 
     ~GA();
 
@@ -64,7 +61,7 @@ private:
     /* mutation */
     mutation_operator opMutate;
     float mutationRate;
-    uint8_t mutateAmount;
+    int mutateAmount;
 
 
     /* private vectors */

@@ -1,5 +1,8 @@
 #include "ga.hpp"
 #include <iostream>
+#include <fstream>
+#include <random>
+#include <string>
 
 /* random */
 std::random_device rd;  // for random function
@@ -80,11 +83,12 @@ void GA::select(){
             break;
     }
 
-    /* debug */
+    /* debug 
     for(auto x: this->matingPool){
         std::cout << x << " ";
     }
     std::cout << std::endl;
+    */
     
 }
 
@@ -188,8 +192,6 @@ void GA::mutate(Wav &offspring){
     int wavSize = mutant.size() / bps;
 
     switch(this->opMutate){
-        case MUTATE_SWAP:
-            // to be implemented
         case MUTATE_ADD_OR_SUB:
             // add or subtract small amount of integer
             for(int i=0;i<wavSize;i++){
@@ -216,42 +218,77 @@ void GA::mutate(Wav &offspring){
             }
 
                 
-            break;            
+            break;     
+        case MUTATE_SWAP:
+            // to be implemented   
+            break;    
     }
         
     // mutate
     offspring.set(mutant);
-    
+
     if(!offspring.valid())
         offspring.set(backup);
 
 
 }
 
-GA::GA(std::vector<Wav>& wavs, selection_operator op1, crossover_operator op2, float crossoverRate, \
-                        mutation_operator op3, float mutationRate){
+GA::GA(std::vector<Wav>& wavs){
 
-    /* parameter */
-    this->maxGeneration = 10;
+    /* population */
     this->numPopulation = wavs.size();
-    this->numMatingPool = 10;
-    this->numElite = 0;
 
     /* fitness evaluation */
     this->fitfunc = new Incomprehensibility(wavs);
     this->sumOfFitness = 0;
 
+
+    std::cout << "####### parameters #######" << std::endl;
+    std::string selections[] = {"SELECT_ROULETTE", "SELECT_SUS"};
+    std::string crossovers[] = {"CROSS_ONE_POINT", "CROSS_UNIFORM", "CROSS_ARITHMETIC"};
+    std::string mutations[] = {"MUTATE_ADD_OR_SUB", "MUTATE_SWAP"};
+
+    int numOfParameters = 9;
+    std::ifstream f("../ga/parameters.csv");
+    std::string params;
+    std::vector<std::string> args(numOfParameters);
+
+    /* parameter parsing from csv file */
+    for(int i=0;i<numOfParameters;i++){
+        getline(f, params, ',');
+        getline(f, params);
+        args[i] = params;
+    }
+
+    /* generation */
+    this->maxGeneration = stoi(args[0]);
+    this->numMatingPool = stoi(args[1]);
+    this->numElite = stoi(args[2]);
+
     /* selection */
-    this->opSelect = op1;
+    this->opSelect = (selection_operator) stoi(args[3]);
 
     /* crossover*/
-    this->opCross = op2;
-    this->crossoverRate = crossoverRate;
+    this->opCross = (crossover_operator) stoi(args[4]);
+    this->crossoverRate = stof(args[5]);
 
     /* mutation*/
-    this->opMutate = op3;
-    this->mutationRate = mutationRate;
-    this->mutateAmount = 10;
+    this->opMutate = (mutation_operator) stoi(args[6]);
+    this->mutationRate = stof(args[7]);
+    this->mutateAmount = stoi(args[8]);
+    
+    std::cout << "generation: " << this->maxGeneration << std::endl;
+    std::cout << "population: " << this->numPopulation << std::endl;
+    std::cout << "    mating: " << this->numMatingPool << std::endl;
+    std::cout << "     elite: " << this->numElite << std::endl;
+    std::cout << " selection: " << selections[this->opSelect] << std::endl;
+    std::cout << " crossover: " << crossovers[this->opCross] << std::endl;
+    std::cout << "      rate: " << this->crossoverRate << std::endl;
+    std::cout << "  mutation: " << mutations[this->opMutate] << std::endl;
+    std::cout << "      rate: " << this->mutationRate << std::endl;
+    std::cout << "    amount: " << this->mutateAmount << std::endl;
+    std::cout << "##########################" << std::endl;
+
 
     /* vector initialize */
     this->parents.assign(wavs.begin(), wavs.end());
@@ -262,7 +299,6 @@ GA::GA(std::vector<Wav>& wavs, selection_operator op1, crossover_operator op2, f
 }
 
 GA::~GA(){
-
     delete this->fitfunc;
 }
 
@@ -291,7 +327,7 @@ std::vector<Wav>& GA::run(){
         this->fitnessOfParents.clear();
         this->matingPool.clear();
         
-        std::cout << "fitness" << std::endl;
+        //std::cout << "fitness" << std::endl;
         this->evaluateFitness();
 
         /* Select Fitter Individual as Parents */
@@ -299,7 +335,7 @@ std::vector<Wav>& GA::run(){
         this->select();
         
         // Crossover
-        std::cout << "crossover" << std::endl;
+        //std::cout << "crossover" << std::endl;
         while(this->offsprings.size() < this->numPopulation - this->numElite){
 
             int p1 = mate(mersenne), p2;
@@ -324,7 +360,7 @@ std::vector<Wav>& GA::run(){
 
      }
     
-    // std::cout << "ga done" << std::endl;
+    std::cout << "ga done" << std::endl;
 
     return this->parents;
 
