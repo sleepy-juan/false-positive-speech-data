@@ -13,34 +13,36 @@
 
 typedef float Fitness;
 
-class GA {
+class GA
+{
 
 public:
-
-    enum selection_operator{
+    enum selection_operator
+    {
         SELECT_ROULETTE,
         SELECT_SUS
     };
 
-    enum crossover_operator{
+    enum crossover_operator
+    {
         CROSS_ONE_POINT,
         CROSS_UNIFORM,
         CROSS_ARITHMETIC
     };
 
-    enum mutation_operator{
+    enum mutation_operator
+    {
         MUTATE_ADD_OR_SUB,
         MUTATE_SWAP
     };
 
-    std::vector<Wav>& run();
+    std::vector<Wav> &run();
 
-    GA(std::vector<Wav>& wavs);
+    GA(std::vector<Wav> &wavs);
 
     ~GA();
 
 private:
-
     /* parameters */
     int maxGeneration;
     int numPopulation;
@@ -48,7 +50,7 @@ private:
     int numElite;
 
     /* fitness evaluation */
-    Incomprehensibility* fitfunc;
+    Incomprehensibility *fitfunc;
     Fitness sumOfFitness;
 
     /* selection */
@@ -63,25 +65,21 @@ private:
     float mutationRate;
     int mutateAmount;
 
-
     /* private vectors */
-    std::vector<Wav> parents;                       // Wav vector for parent
-    std::vector<Fitness> fitnessOfParents;          // Fitness vector of each corresponding parent
-    std::vector<uint32_t> matingPool;               // Selected parents' index by selection algorithm
-    std::vector<Wav> offsprings;                    // Wav vector made by parents(crossover, mutation, etc)
+    std::vector<Wav> parents;              // Wav vector for parent
+    std::vector<Fitness> fitnessOfParents; // Fitness vector of each corresponding parent
+    std::vector<uint32_t> matingPool;      // Selected parents' index by selection algorithm
+    std::vector<Wav> offsprings;           // Wav vector made by parents(crossover, mutation, etc)
 
     /* private method */
     void evaluateFitness();
     void select();
     void crossover(int p1, int p2);
     void mutate(Wav &offspring);
+    void elitism();
 
     //std::vector<Wav> nonDominatedSort();
     //std::vector<Wav> crowdingDistanceSort(std::vector<Wav>& sorted);
-
-
-
 };
-
 
 #endif

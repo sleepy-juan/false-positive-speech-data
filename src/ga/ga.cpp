@@ -5,30 +5,33 @@
 #include <string>
 
 /* random */
-std::random_device rd;  // for random function
+std::random_device rd; // for random function
 std::mt19937 mersenne(rd());
 
 /* private method */
-void GA::evaluateFitness(){
-    // call fitness evaluation function 
+void GA::evaluateFitness()
+{
+    // call fitness evaluation function
 
     int parentSize = this->parents.size();
     this->fitnessOfParents.assign(parentSize, 0);
     this->sumOfFitness = 0;
 
-    for(int i=0;i<parentSize;i++){
-        if(this->fitfunc->evaluate(200, this->parents[i])){
+    for (int i = 0; i < parentSize; i++)
+    {
+        if (this->fitfunc->evaluate(200, this->parents[i]))
+        {
             this->fitnessOfParents[i] = this->fitfunc->fitness() + 0.0001;
         }
-        
+
         this->sumOfFitness += this->fitnessOfParents[i];
 
         //printf("fitness%d : %f\n", i, this->fitnessOfParents[i]);
     }
-
 }
 
-void GA::select(){
+void GA::select()
+{
 
     this->matingPool.assign(this->numMatingPool, NULL);
 
@@ -41,46 +44,53 @@ void GA::select(){
     Fitness pin, interval;
     int poolCount = 0;
 
-    switch(this->opSelect){
-        /* Roulette Wheel Sampling */
-        case SELECT_ROULETTE:
-            while(poolCount < this->numMatingPool){
-                
-                int idx=0;
-                pin = prob(mersenne) * this->sumOfFitness;
-                currentFitnessSum = this->fitnessOfParents[idx];
+    switch (this->opSelect)
+    {
+    /* Roulette Wheel Sampling */
+    case SELECT_ROULETTE:
+        while (poolCount < this->numMatingPool)
+        {
 
-                while(currentFitnessSum < pin){
-                    currentFitnessSum += this->fitnessOfParents[++idx];
-                }
-                
-                this->matingPool[poolCount++] = idx;
+            int idx = 0;
+            pin = prob(mersenne) * this->sumOfFitness;
+            currentFitnessSum = this->fitnessOfParents[idx];
+
+            while (currentFitnessSum < pin)
+            {
+                currentFitnessSum += this->fitnessOfParents[++idx];
             }
 
-            break;
+            this->matingPool[poolCount++] = idx;
+        }
 
-        /* Stochastic Universal Sampling */
-        case SELECT_SUS:
-            pin = interval = this->sumOfFitness / (Fitness) this->numMatingPool;
+        break;
 
-            do{
-                p = prob(mersenne);
-            }while(p == 0);
+    /* Stochastic Universal Sampling */
+    case SELECT_SUS:
+        pin = interval = this->sumOfFitness / (Fitness)this->numMatingPool;
 
-            pin *= p;
+        do
+        {
+            p = prob(mersenne);
+        } while (p == 0);
 
-            for(int i=0;i<parentSize;i++){
-                currentFitnessSum += fitnessOfParents[i];
-                while(currentFitnessSum > pin && poolCount < this->numMatingPool){
-                    this->matingPool[poolCount++] = i;
-                    pin += interval;
-                }
+        pin *= p;
+
+        for (int i = 0; i < parentSize; i++)
+        {
+            currentFitnessSum += fitnessOfParents[i];
+            while (currentFitnessSum > pin && poolCount < this->numMatingPool)
+            {
+                this->matingPool[poolCount++] = i;
+                pin += interval;
             }
+        }
 
-            while(poolCount < this->numMatingPool){
-                this->matingPool[poolCount ++] += parentSize-1;
-            }
-            break;
+        while (poolCount < this->numMatingPool)
+        {
+            this->matingPool[poolCount++] += parentSize - 1;
+        }
+        break;
     }
 
     /* debug 
@@ -89,12 +99,11 @@ void GA::select(){
     }
     std::cout << std::endl;
     */
-    
 }
 
-void GA::crossover(int parent1, int parent2){
-    
-    
+void GA::crossover(int parent1, int parent2)
+{
+
     std::vector<uint8_t> wav1 = this->parents[parent1].get();
     std::vector<uint8_t> wav2 = this->parents[parent2].get();
     std::vector<uint8_t> child;
@@ -111,69 +120,74 @@ void GA::crossover(int parent1, int parent2){
     std::uniform_real_distribution<> cross(0, 1);
     float p;
 
-    switch(this->opCross){
-        case CROSS_ONE_POINT:
+    switch (this->opCross)
+    {
+    case CROSS_ONE_POINT:
 
-            p = points(mersenne);
+        p = points(mersenne);
 
-            wav1Point = (int) (p * wav1Size);
-            wav2Point = (int) (p * wav2Size);
+        wav1Point = (int)(p * wav1Size);
+        wav2Point = (int)(p * wav2Size);
+
+        child.clear();
+
+        for (int i = 0; i < wav1Point; i++)
+            for (int j = 0; j < bps; j++)
+                child.push_back(wav1[bps * i + j]);
+
+        for (int i = wav1Point; i < wav1Size; i++)
+            for (int j = 0; j < bps; j++)
+            {
+                int idx = (int)(i * wav2Size / wav1Size) * bps + j;
+                if (idx < wav2.size())
+                    child.push_back(wav2[idx]);
+                else
+                    child.push_back(0);
+            }
+
+        w1.set(child);
+
+        if (w1.valid())
+            this->offsprings.push_back(w1);
+
+        if (this->offsprings.size() < this->numPopulation - this->numElite)
+        {
 
             child.clear();
 
-            for(int i=0;i<wav1Point;i++)
-                for(int j=0;j<bps;j++)
-                    child.push_back(wav1[bps*i + j]);
-            
-            for(int i=wav1Point;i<wav1Size;i++)
-                for(int j=0;j<bps;j++){
-                    int idx = (int) (i * wav2Size / wav1Size) * bps + j;
-                    if(idx < wav2.size())
-                        child.push_back(wav2[idx]);
+            for (int i = 0; i < wav2Point; i++)
+                for (int j = 0; j < bps; j++)
+                    child.push_back(wav2[bps * i + j]);
+
+            for (int i = wav2Point; i < wav2Size; i++)
+                for (int j = 0; j < bps; j++)
+                {
+                    int idx = (int)(i * wav1Size / wav2Size) * bps + j;
+                    if (idx < wav1.size())
+                        child.push_back(wav1[idx]);
                     else
                         child.push_back(0);
                 }
 
-            w1.set(child);
-            
-            if(w1.valid())
-                this->offsprings.push_back(w1);
+            w2.set(child);
 
-            if(this->offsprings.size() < this->numPopulation - this->numElite){
+            if (w2.valid())
+                this->offsprings.push_back(w2);
+        }
 
-                child.clear();
-
-                for(int i=0;i<wav2Point;i++)
-                    for(int j=0;j<bps;j++)
-                        child.push_back(wav2[bps*i + j]);
-
-                for(int i=wav2Point;i<wav2Size;i++)
-                    for(int j=0;j<bps;j++){
-                        int idx = (int) (i * wav1Size / wav2Size) * bps + j;
-                        if(idx < wav1.size())
-                            child.push_back(wav1[idx]);
-                        else
-                            child.push_back(0);
-                    }
-
-                w2.set(child);
-                
-                if(w2.valid())
-                    this->offsprings.push_back(w2);
-            }
-
-            break;
-        case CROSS_UNIFORM:
-            break;
-        case CROSS_ARITHMETIC:
-            break;
+        break;
+    case CROSS_UNIFORM:
+        break;
+    case CROSS_ARITHMETIC:
+        break;
     }
 
     /* debug */
     //std::cout << "size: " << w2.get().size() << std::endl;
 }
 
-void GA::mutate(Wav &offspring){
+void GA::mutate(Wav &offspring)
+{
 
     // amount of byte to mutate
     //uint32_t mutateLength = 5000;
@@ -182,7 +196,7 @@ void GA::mutate(Wav &offspring){
     //std::uniform_int_distribution<> byte(0, wavSize-mutateLength-1);
 
     std::uniform_real_distribution<> mrate(0, 1);
-    std::uniform_int_distribution<> addorsub(0, 1);     // 0: addition & 1: substraction
+    std::uniform_int_distribution<> addorsub(0, 1); // 0: addition & 1: substraction
 
     // find location to mutate
     //uint32_t locationToMutate = byte(mersenne);
@@ -191,49 +205,58 @@ void GA::mutate(Wav &offspring){
     int bps = offspring.bitPerSample();
     int wavSize = mutant.size() / bps;
 
-    switch(this->opMutate){
-        case MUTATE_ADD_OR_SUB:
-            // add or subtract small amount of integer
-            for(int i=0;i<wavSize;i++){
-                float doRate = mrate(mersenne);
-                if(this->mutationRate > doRate){
-                    if(addorsub(mersenne)==0){
-                        for(int j=0;j<bps;j++){
-                            if(mutant[i*bps + j] + this->mutateAmount > mutant[i*bps + j])
-                                mutant[i*bps + j] = mutant[i*bps + j] + this->mutateAmount;
-                            else
-                                mutant[i*bps + j] = UINT8_MAX;
-                        }
-                    }else{
-                        for(int j=0;j<bps;j++){
-                            if(mutant[i*bps + j] - this->mutateAmount < mutant[i*bps + j])
-                                mutant[i*bps + j] = mutant[i*bps + j] - this->mutateAmount;
-                            else
-                                mutant[i*bps + j] = 0;
-                        } 
+    switch (this->opMutate)
+    {
+    case MUTATE_ADD_OR_SUB:
+        // add or subtract small amount of integer
+        for (int i = 0; i < wavSize; i++)
+        {
+            float doRate = mrate(mersenne);
+            if (this->mutationRate > doRate)
+            {
+                if (addorsub(mersenne) == 0)
+                {
+                    for (int j = 0; j < bps; j++)
+                    {
+                        if (mutant[i * bps + j] + this->mutateAmount > mutant[i * bps + j])
+                            mutant[i * bps + j] = mutant[i * bps + j] + this->mutateAmount;
+                        else
+                            mutant[i * bps + j] = UINT8_MAX;
                     }
-
                 }
-                //printf("doRate: %f\n", doRate);
+                else
+                {
+                    for (int j = 0; j < bps; j++)
+                    {
+                        if (mutant[i * bps + j] - this->mutateAmount < mutant[i * bps + j])
+                            mutant[i * bps + j] = mutant[i * bps + j] - this->mutateAmount;
+                        else
+                            mutant[i * bps + j] = 0;
+                    }
+                }
             }
+            //printf("doRate: %f\n", doRate);
+        }
 
-                
-            break;     
-        case MUTATE_SWAP:
-            // to be implemented   
-            break;    
+        break;
+    case MUTATE_SWAP:
+        // to be implemented
+        break;
     }
-        
+
     // mutate
     offspring.set(mutant);
 
-    if(!offspring.valid())
+    if (!offspring.valid())
         offspring.set(backup);
-
-
 }
 
-GA::GA(std::vector<Wav>& wavs){
+void GA::elitism()
+{
+}
+
+GA::GA(std::vector<Wav> &wavs)
+{
 
     /* population */
     this->numPopulation = wavs.size();
@@ -241,7 +264,6 @@ GA::GA(std::vector<Wav>& wavs){
     /* fitness evaluation */
     this->fitfunc = new Incomprehensibility(wavs);
     this->sumOfFitness = 0;
-
 
     std::cout << "####### parameters #######" << std::endl;
     std::string selections[] = {"SELECT_ROULETTE", "SELECT_SUS"};
@@ -254,7 +276,8 @@ GA::GA(std::vector<Wav>& wavs){
     std::vector<std::string> args(numOfParameters);
 
     /* parameter parsing from csv file */
-    for(int i=0;i<numOfParameters;i++){
+    for (int i = 0; i < numOfParameters; i++)
+    {
         getline(f, params, ',');
         getline(f, params);
         args[i] = params;
@@ -266,17 +289,17 @@ GA::GA(std::vector<Wav>& wavs){
     this->numElite = stoi(args[2]);
 
     /* selection */
-    this->opSelect = (selection_operator) stoi(args[3]);
+    this->opSelect = (selection_operator)stoi(args[3]);
 
     /* crossover*/
-    this->opCross = (crossover_operator) stoi(args[4]);
+    this->opCross = (crossover_operator)stoi(args[4]);
     this->crossoverRate = stof(args[5]);
 
     /* mutation*/
-    this->opMutate = (mutation_operator) stoi(args[6]);
+    this->opMutate = (mutation_operator)stoi(args[6]);
     this->mutationRate = stof(args[7]);
     this->mutateAmount = stoi(args[8]);
-    
+
     std::cout << "generation: " << this->maxGeneration << std::endl;
     std::cout << "population: " << this->numPopulation << std::endl;
     std::cout << "    mating: " << this->numMatingPool << std::endl;
@@ -289,79 +312,76 @@ GA::GA(std::vector<Wav>& wavs){
     std::cout << "    amount: " << this->mutateAmount << std::endl;
     std::cout << "##########################" << std::endl;
 
-
     /* vector initialize */
     this->parents.assign(wavs.begin(), wavs.end());
     this->fitnessOfParents.clear();
     this->matingPool.clear();
     this->offsprings.clear();
-    
 }
 
-GA::~GA(){
+GA::~GA()
+{
     delete this->fitfunc;
 }
 
-
-std::vector<Wav>& GA::run(){
+std::vector<Wav> &GA::run()
+{
 
     // set random
-    std::uniform_int_distribution<> mate(0, this->numMatingPool-1);
+    std::uniform_int_distribution<> mate(0, this->numMatingPool - 1);
     std::uniform_real_distribution<> prob(0, 1);
 
-
     /* debug */
-    
+
     // for(auto x: this->parents){
     //     std::cout << x.valid() << " ";
     // }
     // std::cout << std::endl;
 
-
     /* run ga */
-    for(int j=1;j<=this->maxGeneration;j++){
+    for (int j = 1; j <= this->maxGeneration; j++)
+    {
 
         std::cout << "generation: " << j << std::endl;
 
         this->offsprings.clear();
         this->fitnessOfParents.clear();
         this->matingPool.clear();
-        
+
         //std::cout << "fitness" << std::endl;
         this->evaluateFitness();
 
         /* Select Fitter Individual as Parents */
         //std::cout << "select" << std::endl;
         this->select();
-        
+
         // Crossover
         //std::cout << "crossover" << std::endl;
-        while(this->offsprings.size() < this->numPopulation - this->numElite){
+        while (this->offsprings.size() < this->numPopulation - this->numElite)
+        {
 
             int p1 = mate(mersenne), p2;
-            do{
+            do
+            {
                 p2 = mate(mersenne);
-            }while(p1 == p2);
-            
+            } while (p1 == p2);
+
             this->crossover(this->matingPool[p1], this->matingPool[p2]);
         }
 
+        //     // elitism - to be implemented
+        this->elitism();
 
-    //     // elitism - to be implemented
-        
-        
-         // mutation
-         for(int i=0;i<this->numPopulation;i++){
-             mutate(this->offsprings[i]);
-         }
-    
+        // mutation
+        for (int i = 0; i < this->numPopulation; i++)
+        {
+            mutate(this->offsprings[i]);
+        }
 
         this->parents.assign(this->offsprings.begin(), this->offsprings.end());
+    }
 
-     }
-    
     std::cout << "ga done" << std::endl;
 
     return this->parents;
-
 }
