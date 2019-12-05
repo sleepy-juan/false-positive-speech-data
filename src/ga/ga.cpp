@@ -253,6 +253,13 @@ void GA::mutate(Wav &offspring)
 
 void GA::elitism()
 {
+    std::sort(parents.begin(), parents.end(), [&](size_t i, size_t j) { return fitnessOfParents[i] > fitnessOfParents[j]; });
+    std::sort(fitnessOfParents.begin(), fitnessOfParents.end(), std::greater<float>());
+
+    for (int i = 0; i < numElite; i++)
+    {
+        offsprings.push_back(parents[i]);
+    }
 }
 
 GA::GA(std::vector<Wav> &wavs)
