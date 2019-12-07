@@ -2,7 +2,7 @@ import wave
 
 try:
     orginal = wave.open('weather.wav', 'rb')
-    modified = wave.open('modified.wav', 'wb')
+    modified = wave.open('copied.wav', 'wb')
 
     nchannels, sampwidth, framerate, nframes, comptype, compname = orginal.getparams()
     modified.setparams((nchannels, sampwidth, framerate, nframes, comptype, compname))
