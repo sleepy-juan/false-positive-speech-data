@@ -46,7 +46,7 @@ int min(int x, int y, int z)
     return min(min(x, y), z);
 }
 
-/*
+/*                                                            
     Calculates the average of all bitwise differences.
     Assume two input files are of equal length.
 */
@@ -94,9 +94,9 @@ int editDistance(std::string org_filename, std::string mod_filename)
     }
 
     
-    for (int i = 0; i <= numRows; i++)
+    for (int i = 0; i < numRows; i++)
     {
-        for (int j = 0; j <= numCols; j++)
+        for (int j = 0; j < numCols; j++)
         {
             if (i == 0)
                 ED[i][j] = j;
@@ -115,7 +115,7 @@ int editDistance(std::string org_filename, std::string mod_filename)
         }
     }
 
-    int result = ED[numRows][numCols];
+    int result = ED[numRows-1][numCols-1];
 
     // free
     for (int i = 0; i < numRows; i++)
@@ -123,6 +123,6 @@ int editDistance(std::string org_filename, std::string mod_filename)
         delete[] ED[i];
     }
     delete[] ED;
-
+    std::cout << "Freed" << std::endl;
     return result;
 }
