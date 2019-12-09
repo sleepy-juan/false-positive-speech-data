@@ -15,7 +15,7 @@
 using namespace std;
 
 Incomprehensibility::Incomprehensibility(std::vector<Wav> &originals)
-    : originals(originals), _fitness(0) {}
+    : originals(originals), _fitness(-1) {}
 
 bool Incomprehensibility::evaluateFitness(int sampleRate, Wav &original, Wav &modified)
 {
@@ -92,7 +92,14 @@ bool Incomprehensibility::evaluateFitness(int sampleRate, Wav &original, Wav &mo
 
   fitness = sqrt((float)verticalPath / (float)totalPath);
 
-  this->_fitness = fitness;
+  if (this->_fitness < 0){
+    this->_fitness = fitness;
+  }
+  else{
+    if (this->_fitness > fitness){
+      this->_fitness = fitness;
+    }
+  }
   
   /* free memory for DTW matrix */
   for (int i = 0; i < numRows; ++i)
