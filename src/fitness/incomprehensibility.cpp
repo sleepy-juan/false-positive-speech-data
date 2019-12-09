@@ -92,9 +92,8 @@ bool Incomprehensibility::evaluateFitness(int sampleRate, Wav &original, Wav &mo
 
   fitness = sqrt((float)verticalPath / (float)totalPath);
 
-  if (fitness < this->_fitness)
-    this->_fitness = fitness;
-
+  this->_fitness = fitness;
+  
   /* free memory for DTW matrix */
   for (int i = 0; i < numRows; ++i)
   {
