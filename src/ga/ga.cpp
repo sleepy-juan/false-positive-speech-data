@@ -222,7 +222,6 @@ void GA::mutate(Wav &offspring)
                         mutant[i * bps] = mutant[i * bps] + this->mutateAmount;
                     else
                         mutant[i * bps] = UINT8_MAX;
-                    
                 }
                 else
                 {
@@ -231,7 +230,6 @@ void GA::mutate(Wav &offspring)
                         mutant[i * bps] = mutant[i * bps] - this->mutateAmount;
                     else
                         mutant[i * bps] = 0;
-
                 }
             }
             //printf("doRate: %f\n", doRate);
@@ -252,8 +250,17 @@ void GA::mutate(Wav &offspring)
 
 void GA::elitism()
 {
-    //std::sort(parents.begin(), parents.end(), [&](size_t i, size_t j) { return fitnessOfParents[i] > fitnessOfParents[j]; });
-    //std::sort(fitnessOfParents.begin(), fitnessOfParents.end(), std::greater<float>());
+    for (int i = 0; i < parents.size(); i++)
+    {
+        for (int j = i + 1; j < parents.size(); j++)
+        {
+            if (fitnessOfParents[i] < fitnessOfParents[j])
+            {
+                std::swap(parents[i], parents[j]);
+                std::swap(fitnessOfParents[i], fitnessOfParents[j]);
+            }
+        }
+    }
 
     for (int i = 0; i < numElite; i++)
     {
