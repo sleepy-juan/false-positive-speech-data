@@ -3,6 +3,7 @@
 #include <fstream>
 #include <random>
 #include <string>
+#include <algorithm>
 
 /* random */
 std::random_device rd; // for random function
@@ -26,7 +27,7 @@ void GA::evaluateFitness()
 
         this->sumOfFitness += this->fitnessOfParents[i];
 
-        //printf("fitness%d : %f\n", i, this->fitnessOfParents[i]);
+        printf("fitness%02d : %f\n", i, this->fitnessOfParents[i]);
     }
 }
 
@@ -216,23 +217,21 @@ void GA::mutate(Wav &offspring)
             {
                 if (addorsub(mersenne) == 0)
                 {
-                    for (int j = 0; j < bps; j++)
-                    {
-                        if (mutant[i * bps + j] + this->mutateAmount > mutant[i * bps + j])
-                            mutant[i * bps + j] = mutant[i * bps + j] + this->mutateAmount;
-                        else
-                            mutant[i * bps + j] = UINT8_MAX;
-                    }
+
+                    if (mutant[i * bps] + this->mutateAmount > mutant[i * bps])
+                        mutant[i * bps] = mutant[i * bps] + this->mutateAmount;
+                    else
+                        mutant[i * bps] = UINT8_MAX;
+                    
                 }
                 else
                 {
-                    for (int j = 0; j < bps; j++)
-                    {
-                        if (mutant[i * bps + j] - this->mutateAmount < mutant[i * bps + j])
-                            mutant[i * bps + j] = mutant[i * bps + j] - this->mutateAmount;
-                        else
-                            mutant[i * bps + j] = 0;
-                    }
+
+                    if (mutant[i * bps] - this->mutateAmount < mutant[i * bps])
+                        mutant[i * bps] = mutant[i * bps] - this->mutateAmount;
+                    else
+                        mutant[i * bps] = 0;
+
                 }
             }
             //printf("doRate: %f\n", doRate);
@@ -253,8 +252,8 @@ void GA::mutate(Wav &offspring)
 
 void GA::elitism()
 {
-    std::sort(parents.begin(), parents.end(), [&](size_t i, size_t j) { return fitnessOfParents[i] > fitnessOfParents[j]; });
-    std::sort(fitnessOfParents.begin(), fitnessOfParents.end(), std::greater<float>());
+    //std::sort(parents.begin(), parents.end(), [&](size_t i, size_t j) { return fitnessOfParents[i] > fitnessOfParents[j]; });
+    //std::sort(fitnessOfParents.begin(), fitnessOfParents.end(), std::greater<float>());
 
     for (int i = 0; i < numElite; i++)
     {
@@ -377,7 +376,7 @@ std::vector<Wav> &GA::run()
         }
 
         //     // elitism - to be implemented
-        this->elitism();
+        //this->elitism();
 
         // mutation
         for (int i = 0; i < this->numPopulation; i++)
