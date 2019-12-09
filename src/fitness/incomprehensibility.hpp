@@ -23,7 +23,7 @@ class Incomprehensibility
 private:
     std::vector<Wav> originals;
     float _fitness;
-
+    float min_fitness;
     char smallest(char A, char B, char C);
     bool evaluateFitness(int sampleRate, Wav &original, Wav &modified);
 
