@@ -2,17 +2,19 @@ import wave
 import random
 
 
-CrossoverUnit = 30000
+CrossoverUnit = 20000
 
 
 try:
-    FileToCrossover1 = wave.open('ok_google1.wav', 'rb')
-    FileToCrossover2 = wave.open('ok_google2.wav', 'rb')
+    FileToCrossover1 = wave.open('1234567-1.wav', 'rb')
+    FileToCrossover2 = wave.open('1234567-2.wav', 'rb')
     CrossoverFile1 = wave.open('Crossover1.wav', 'wb')
     CrossoverFile2 = wave.open('Crossover2.wav', 'wb')
 
     nchannels1, sampwidth1, framerate1, nframes1, comptype1, compname1 = FileToCrossover1.getparams()
-    nchannels2, sampwidth2, framerate2, nframes2, comptype2, compname2 = FileToCrossover1.getparams()
+    nchannels2, sampwidth2, framerate2, nframes2, comptype2, compname2 = FileToCrossover2.getparams()
+
+    print(nframes1, nframes2)
 
     CrossoverFile1.setparams((nchannels1, sampwidth1, framerate1, nframes1, comptype1, compname1))
     CrossoverFile2.setparams((nchannels2, sampwidth2, framerate2, nframes2, comptype2, compname2))
@@ -36,6 +38,8 @@ try:
 
     CrossoverFile1.writeframes(FileToCrossover1_Frames)
     CrossoverFile2.writeframes(FileToCrossover2_Frames)
+
+    print(nframes1, nframes2)
 
 
 finally:
