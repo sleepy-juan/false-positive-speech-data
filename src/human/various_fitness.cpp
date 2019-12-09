@@ -25,7 +25,8 @@ int editDistance(std::string org_filename, std::string mod_filename);
 //testbed for trying out new functions.
 int main(int argc, char **argv)
 {
-    Wav wav("../../audio/original/weather.wav");
+    // std::cout << "hello world" << std::endl;
+    Wav wav("test_audio/original.wav");
     std::vector<uint8_t> v = wav.get();
     if (wav.valid())
     {
@@ -36,7 +37,7 @@ int main(int argc, char **argv)
         std::cout << "Unable to open" << std::endl;
         return -1;
     }
-    int answer = editDistance("../../audio/original/weather.wav", "../../audio/modified/copied.wav");
+    int answer = editDistance("test_audio/original.wav", "test_audio/modified.wav");
     std::cout << answer << std::endl;
 }
 
@@ -83,7 +84,7 @@ int editDistance(std::string org_filename, std::string mod_filename)
 
     int numRows = original.size() / sampleRate;
     int numCols = modified.size() / sampleRate;
-    std::cout << numRows << std::endl;
+   
 
     // allocate
     int **ED = new int *[numRows];
@@ -92,7 +93,7 @@ int editDistance(std::string org_filename, std::string mod_filename)
         ED[i] = new int[numCols];
     }
 
-    std::cout << numRows << std::endl;
+    
     for (int i = 0; i <= numRows; i++)
     {
         for (int j = 0; j <= numCols; j++)
