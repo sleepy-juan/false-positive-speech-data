@@ -15,7 +15,6 @@
 #include <stdlib.h>
 
 #include "../wav/wav.hpp"
-#include "../wav/wav.cpp"
 
 using namespace std;
 
@@ -84,7 +83,6 @@ int editDistance(std::string org_filename, std::string mod_filename)
 
     int numRows = original.size() / sampleRate;
     int numCols = modified.size() / sampleRate;
-   
 
     // allocate
     int **ED = new int *[numRows];
@@ -93,7 +91,6 @@ int editDistance(std::string org_filename, std::string mod_filename)
         ED[i] = new int[numCols];
     }
 
-    
     for (int i = 0; i < numRows; i++)
     {
         for (int j = 0; j < numCols; j++)
@@ -115,7 +112,7 @@ int editDistance(std::string org_filename, std::string mod_filename)
         }
     }
 
-    int result = ED[numRows-1][numCols-1];
+    int result = ED[numRows - 1][numCols - 1];
 
     // free
     for (int i = 0; i < numRows; i++)
