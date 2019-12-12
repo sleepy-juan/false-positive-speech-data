@@ -8,12 +8,19 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Question #<span id="questionNumber">1</span></h1>
-    <audio src="voice/2.wav" controls></audio>
-    <h2>Can you Comprehend the audio?</h2>
-    <input name="comprehend" type="radio">  <span id="yesno">Yes</span> <input name="comprehend" type="radio"> <span id="yesno">No</span>
-    <h2>What is it?</h2>
-    <textarea></textarea><br>
+    <div class="question">
+        <h1>Question #<span id="questionNumber">1</span></h1>
+        <audio id="voice" src="voice/2.wav" controls></audio>
+    </div>
+    <div class="comprehend">
+        <h2>Can you Comprehend the audio?</h2>
+        <input name="comprehend" type="radio">  <span id="yesno">Yes</span> <input name="comprehend" type="radio"> <span id="yesno">No</span>
+    </div>
+    <div class="what">
+        <h2>What is it?</h2>
+        <textarea id="content"></textarea><br>
+    </div>
     <button id="submit">Submit</button>
+    <script src="processor.js"></script>
 </body>
 </html>
