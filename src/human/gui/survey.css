@@ -1,0 +1,13 @@
+input[type='radio'] { 
+    transform: scale(2); 
+}
+
+#yesno{
+    font-size:1.5em;
+    margin: 0 5vw 0 2vw;
+}
+
+#submit{
+    width: 10vw;
+    margin: 5vh 1vw 1vh 1vw;
+}
