@@ -19,6 +19,9 @@
 using namespace std;
 
 float bitwiseAverageDifference(std::string org_filename, std::string mod_filename);
+float bitwiseSquaredDifference(std::string org_filename, std::string mod_filename);
+float bitwiseGradientDifference(std::string org_filename, std::string mod_filename);
+float bitwiseAverageCalibrated(std::string org_filename, std::string mod_filename);
 int editDistance(std::string org_filename, std::string mod_filename);
 
 //testbed for trying out new functions.
@@ -36,7 +39,7 @@ int main(int argc, char **argv)
         std::cout << "Unable to open" << std::endl;
         return -1;
     }
-    int answer = editDistance("test_audio/original.wav", "test_audio/modified.wav");
+    int answer = bitwiseAverageCalibrated("test_audio/original.wav", "test_audio/modified.wav");
     std::cout << answer << std::endl;
 }
 
@@ -63,6 +66,69 @@ float bitwiseAverageDifference(std::string org_filename, std::string mod_filenam
     for (int i = 0; i < numRows; i++)
     {
         average += abs(original.at(i) - modified.at(i)) / numRows;
+    }
+    return average;
+}
+
+float bitwiseSquaredDifference(std::string org_filename, std::string mod_filename)
+{
+    Wav wav(org_filename);
+    std::vector<uint8_t> original = wav.get();
+
+    Wav wav2(mod_filename);
+    std::vector<uint8_t> modified = wav2.get();
+
+    float numRows = original.size();
+
+    float average = 0;
+    for (int i = 0; i < numRows; i++)
+    {
+        average += abs(original.at(i) - modified.at(i))* abs(original.at(i) - modified.at(i)) / numRows;
+    }
+    return average;
+}
+
+float bitwiseGradientDifference(std::string org_filename, std::string mod_filename)
+{
+    Wav wav(org_filename);
+    std::vector<uint8_t> original = wav.get();
+
+    Wav wav2(mod_filename);
+    std::vector<uint8_t> modified = wav2.get();
+
+    float numRows = original.size();
+
+    float average = 0;
+    for (int i = 0; i < numRows-1; i++)
+    {
+        float orgGradient = original.at(i) - original.at(i+1);
+        float modGradient = modified.at(i) - modified.at(i+1);
+        average += abs(orgGradient-modGradient)/numRows;
+    }
+    return average;
+}
+
+float bitwiseAverageCalibrated(std::string org_filename, std::string mod_filename)
+{
+    Wav wav(org_filename);
+    std::vector<uint8_t> original = wav.get();
+
+    Wav wav2(mod_filename);
+    std::vector<uint8_t> modified = wav2.get();
+
+    float numRows = original.size();
+
+    float orgAverage = 0;
+    float modAverage =0;
+    for (int i = 0; i < numRows; i++)
+    {
+        orgAverage += original.at(i) /numRows;
+        modAverage += modified.at(i) /numRows;
+    }
+    float average=0;
+    for (int i=0; i< numRows; i++)
+    {
+        average += abs(abs(original.at(i)-orgAverage)-abs(modified.at(i)-modAverage))  /numRows;
     }
     return average;
 }
