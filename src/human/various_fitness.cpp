@@ -15,17 +15,20 @@
 #include <stdlib.h>
 
 #include "../wav/wav.hpp"
-#include "../wav/wav.cpp"
 
 using namespace std;
 
 float bitwiseAverageDifference(std::string org_filename, std::string mod_filename);
+float bitwiseSquaredDifference(std::string org_filename, std::string mod_filename);
+float bitwiseGradientDifference(std::string org_filename, std::string mod_filename);
+float bitwiseAverageCalibrated(std::string org_filename, std::string mod_filename);
 int editDistance(std::string org_filename, std::string mod_filename);
 
 //testbed for trying out new functions.
 int main(int argc, char **argv)
 {
-    Wav wav("../../audio/original/weather.wav");
+    // std::cout << "hello world" << std::endl;
+    Wav wav("test_audio/original.wav");
     std::vector<uint8_t> v = wav.get();
     if (wav.valid())
     {
@@ -36,7 +39,7 @@ int main(int argc, char **argv)
         std::cout << "Unable to open" << std::endl;
         return -1;
     }
-    int answer = editDistance("../../audio/original/weather.wav", "../../audio/modified/copied.wav");
+    int answer = bitwiseAverageCalibrated("test_audio/original.wav", "test_audio/modified.wav");
     std::cout << answer << std::endl;
 }
 
@@ -45,7 +48,7 @@ int min(int x, int y, int z)
     return min(min(x, y), z);
 }
 
-/*
+/*                                                            
     Calculates the average of all bitwise differences.
     Assume two input files are of equal length.
 */
@@ -67,6 +70,69 @@ float bitwiseAverageDifference(std::string org_filename, std::string mod_filenam
     return average;
 }
 
+float bitwiseSquaredDifference(std::string org_filename, std::string mod_filename)
+{
+    Wav wav(org_filename);
+    std::vector<uint8_t> original = wav.get();
+
+    Wav wav2(mod_filename);
+    std::vector<uint8_t> modified = wav2.get();
+
+    float numRows = original.size();
+
+    float average = 0;
+    for (int i = 0; i < numRows; i++)
+    {
+        average += abs(original.at(i) - modified.at(i))* abs(original.at(i) - modified.at(i)) / numRows;
+    }
+    return average;
+}
+
+float bitwiseGradientDifference(std::string org_filename, std::string mod_filename)
+{
+    Wav wav(org_filename);
+    std::vector<uint8_t> original = wav.get();
+
+    Wav wav2(mod_filename);
+    std::vector<uint8_t> modified = wav2.get();
+
+    float numRows = original.size();
+
+    float average = 0;
+    for (int i = 0; i < numRows-1; i++)
+    {
+        float orgGradient = original.at(i) - original.at(i+1);
+        float modGradient = modified.at(i) - modified.at(i+1);
+        average += abs(orgGradient-modGradient)/numRows;
+    }
+    return average;
+}
+
+float bitwiseAverageCalibrated(std::string org_filename, std::string mod_filename)
+{
+    Wav wav(org_filename);
+    std::vector<uint8_t> original = wav.get();
+
+    Wav wav2(mod_filename);
+    std::vector<uint8_t> modified = wav2.get();
+
+    float numRows = original.size();
+
+    float orgAverage = 0;
+    float modAverage =0;
+    for (int i = 0; i < numRows; i++)
+    {
+        orgAverage += original.at(i) /numRows;
+        modAverage += modified.at(i) /numRows;
+    }
+    float average=0;
+    for (int i=0; i< numRows; i++)
+    {
+        average += abs(abs(original.at(i)-orgAverage)-abs(modified.at(i)-modAverage))  /numRows;
+    }
+    return average;
+}
+
 /*
     finds the edit distance between the inputs.
     only works for very short files due to extremely high space complexity
@@ -83,7 +149,6 @@ int editDistance(std::string org_filename, std::string mod_filename)
 
     int numRows = original.size() / sampleRate;
     int numCols = modified.size() / sampleRate;
-    std::cout << numRows << std::endl;
 
     // allocate
     int **ED = new int *[numRows];
@@ -92,10 +157,9 @@ int editDistance(std::string org_filename, std::string mod_filename)
         ED[i] = new int[numCols];
     }
 
-    std::cout << numRows << std::endl;
-    for (int i = 0; i <= numRows; i++)
+    for (int i = 0; i < numRows; i++)
     {
-        for (int j = 0; j <= numCols; j++)
+        for (int j = 0; j < numCols; j++)
         {
             if (i == 0)
                 ED[i][j] = j;
@@ -114,7 +178,7 @@ int editDistance(std::string org_filename, std::string mod_filename)
         }
     }
 
-    int result = ED[numRows][numCols];
+    int result = ED[numRows - 1][numCols - 1];
 
     // free
     for (int i = 0; i < numRows; i++)
@@ -122,6 +186,6 @@ int editDistance(std::string org_filename, std::string mod_filename)
         delete[] ED[i];
     }
     delete[] ED;
-
+    std::cout << "Freed" << std::endl;
     return result;
 }

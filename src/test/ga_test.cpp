@@ -9,7 +9,7 @@ int main(int argc, char ** argv){
     std::string apath = "../../audio/modified/ga/";
 
     std::vector<Wav> wavs;
-    int parentsSize = 20;
+    int parentsSize = 5;
 
     for(int i=1;i<=parentsSize;i++){
         Wav wav(bpath + std::to_string(i) + std::string(".wav"));
