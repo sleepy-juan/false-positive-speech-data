@@ -29,7 +29,7 @@ private:
     std::string path_to_python;
 
 public:
-    Fitness(std::vector<Wav>& originals);
+    Fitness(std::vector<Wav> &originals);
     bool evaluate(Wav &wav);
     void changeGamma(float newGamma);
     void changeRate(int newRate);

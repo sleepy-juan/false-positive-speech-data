@@ -1,3 +1,5 @@
+# -*- conding: utf-8 -*-
+
 # google_api_python.py
 # - run and test google api using wav file
 #

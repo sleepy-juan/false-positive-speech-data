@@ -7,11 +7,9 @@
 #ifndef __GA_HPP__
 #define __GA_HPP__
 
-#include "../fitness/incomprehensibility.hpp"
+#include "../fitness/fitness.hpp"
 #include "../wav/wav.hpp"
 #include <vector>
-
-typedef float Fitness;
 
 class GA
 {
@@ -50,8 +48,8 @@ private:
     int numElite;
 
     /* fitness evaluation */
-    Incomprehensibility *fitfunc;
-    Fitness sumOfFitness;
+    Fitness *fitfunc;
+    float sumOfFitness;
 
     /* selection */
     selection_operator opSelect;
@@ -66,10 +64,10 @@ private:
     int mutateAmount;
 
     /* private vectors */
-    std::vector<Wav> parents;              // Wav vector for parent
-    std::vector<Fitness> fitnessOfParents; // Fitness vector of each corresponding parent
-    std::vector<uint32_t> matingPool;      // Selected parents' index by selection algorithm
-    std::vector<Wav> offsprings;           // Wav vector made by parents(crossover, mutation, etc)
+    std::vector<Wav> parents;            // Wav vector for parent
+    std::vector<float> fitnessOfParents; // Fitness vector of each corresponding parent
+    std::vector<uint32_t> matingPool;    // Selected parents' index by selection algorithm
+    std::vector<Wav> offsprings;         // Wav vector made by parents(crossover, mutation, etc)
 
     /* private method */
     void evaluateFitness();

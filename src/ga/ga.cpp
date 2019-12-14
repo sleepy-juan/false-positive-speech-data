@@ -20,7 +20,7 @@ void GA::evaluateFitness()
 
     for (int i = 0; i < parentSize; i++)
     {
-        if (this->fitfunc->evaluate(200, this->parents[i]))
+        if (this->fitfunc->evaluate(this->parents[i]))
         {
             this->fitnessOfParents[i] = this->fitfunc->fitness() + 0.0001;
         }
@@ -38,11 +38,11 @@ void GA::select()
 
     std::uniform_real_distribution<> prob(0, 1);
     float p;
-    Fitness currentFitnessSum = 0;
+    float currentFitnessSum = 0;
 
     int parentSize = parents.size();
 
-    Fitness pin, interval;
+    float pin, interval;
     int poolCount = 0;
 
     switch (this->opSelect)
@@ -68,7 +68,7 @@ void GA::select()
 
     /* Stochastic Universal Sampling */
     case SELECT_SUS:
-        pin = interval = this->sumOfFitness / (Fitness)this->numMatingPool;
+        pin = interval = this->sumOfFitness / (float)this->numMatingPool;
 
         do
         {
@@ -275,7 +275,7 @@ GA::GA(std::vector<Wav> &wavs)
     this->numPopulation = wavs.size();
 
     /* fitness evaluation */
-    this->fitfunc = new Incomprehensibility(wavs);
+    this->fitfunc = new Fitness(wavs);
     this->sumOfFitness = 0;
 
     std::cout << "####### parameters #######" << std::endl;
@@ -284,7 +284,7 @@ GA::GA(std::vector<Wav> &wavs)
     std::string mutations[] = {"MUTATE_ADD_OR_SUB", "MUTATE_SWAP"};
 
     int numOfParameters = 9;
-    std::ifstream f("../ga/parameters.csv");
+    std::ifstream f("parameters.csv");
     std::string params;
     std::vector<std::string> args(numOfParameters);
 
