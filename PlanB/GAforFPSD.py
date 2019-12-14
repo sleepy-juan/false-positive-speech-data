@@ -91,21 +91,35 @@ def CalculateFitness_Sum(File1, File2):
         return Difference
 
 
-for i in range(3):
-    shutil.rmtree('modified/'+str(i))
+for i in range(201):
+    # shutil.rmtree('modified/'+str(i))
     os.makedirs('modified/'+str(i))
 
 InitalPool = ReadOriginalFiles('../audio/original/', './modified/0/')
 
-for i in range(3):
+for i in range(200):
+
     Pool = os.listdir('./modified/'+str(i)+'/')
     Crossover('./modified/'+str(i)+'/', Pool, i+1)
 
-    for file in os.listdir('./modified/'+str(i)+'/'):
+
+    # # 차이가 커지도록 프레셔
+    # for file in os.listdir('./modified/'+str(i+1)+'/'):
+    #     if file.startswith('_'):
+    #         FileToCompare1 = './modified/'+str(i+1)+'/'+file
+    #         FileToCompare2 = './modified/'+str(i+1)+'/'+file.lstrip('_')
+    #         if CalculateFitness_Sum('../audio/original/'+file.lstrip('_'), FileToCompare1) < CalculateFitness_Sum('../audio/original/'+file.lstrip('_'), FileToCompare2):
+    #             os.remove(FileToCompare1)
+    #         else:
+    #             os.remove(FileToCompare2)
+    #             os.rename(FileToCompare1, FileToCompare2)
+
+    # 차이가 작도록 프레셔
+    for file in os.listdir('./modified/'+str(i+1)+'/'):
         if file.startswith('_'):
-            FileToCompare1 = './modified/'+str(i)+'/'+file
-            FileToCompare2 = './modified/'+str(i)+'/'+file.lstrip('_')
-            if CalculateFitness_Sum('../audio/original/'+file.lstrip('_'), FileToCompare1) < CalculateFitness_Sum('../audio/original/'+file.lstrip('_'), FileToCompare2):
+            FileToCompare1 = './modified/'+str(i+1)+'/'+file
+            FileToCompare2 = './modified/'+str(i+1)+'/'+file.lstrip('_')
+            if CalculateFitness_Sum('../audio/original/'+file.lstrip('_'), FileToCompare1) > CalculateFitness_Sum('../audio/original/'+file.lstrip('_'), FileToCompare2):
                 os.remove(FileToCompare1)
             else:
                 os.remove(FileToCompare2)
