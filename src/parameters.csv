@@ -1,9 +1,9 @@
-maxGeneration,3
-numMatingPool,10
-numElite,0
+maxGeneration,80
+numMatingPool,15
+numElite,3
 opSelect,1
 opCross,0
 crossoverRate,0.8
 opMutate,0
-mutationRate,0.5
+mutationRate,0.85
 mutateAmount,10

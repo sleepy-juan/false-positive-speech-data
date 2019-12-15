@@ -13,8 +13,10 @@ std::mt19937 mersenne(rd());
 void GA::evaluateFitness()
 {
     // call fitness evaluation function
+    // std::cout << "evaluate" << std::endl;
 
     int parentSize = this->parents.size();
+    // std::cout << this->parents.size() << std::endl;
     this->fitnessOfParents.assign(parentSize, 0);
     this->sumOfFitness = 0;
 
@@ -22,7 +24,13 @@ void GA::evaluateFitness()
     {
         if (this->fitfunc->evaluate(this->parents[i]))
         {
+            // printf("evaluate success!\n");
             this->fitnessOfParents[i] = this->fitfunc->fitness() + 0.0001;
+        }
+        else
+        {
+            this->fitnessOfParents[i] = 0;
+            printf("evaluate failed!\n");
         }
 
         this->sumOfFitness += this->fitnessOfParents[i];
@@ -337,7 +345,7 @@ GA::~GA()
     delete this->fitfunc;
 }
 
-std::vector<Wav> &GA::run()
+std::vector<Wav> &GA::run(int sg)
 {
 
     // set random
@@ -352,7 +360,7 @@ std::vector<Wav> &GA::run()
     // std::cout << std::endl;
 
     /* run ga */
-    for (int j = 1; j <= this->maxGeneration; j++)
+    for (int j = sg; j <= this->maxGeneration; j++)
     {
 
         std::cout << "generation: " << j << std::endl;
@@ -361,15 +369,20 @@ std::vector<Wav> &GA::run()
         this->fitnessOfParents.clear();
         this->matingPool.clear();
 
-        //std::cout << "fitness" << std::endl;
+        // std::cout << "fitness" << std::endl;
         this->evaluateFitness();
 
+        for (int i = 1; i <= this->numPopulation; i++)
+        {
+            this->parents[i - 1].save("../audio/modified/ga/g" + std::to_string(j) + "_" + std::to_string(i) + ".wav");
+        }
+
         /* Select Fitter Individual as Parents */
-        //std::cout << "select" << std::endl;
+        // std::cout << "select" << std::endl;
         this->select();
 
         // Crossover
-        //std::cout << "crossover" << std::endl;
+        // std::cout << "crossover" << std::endl;
         while (this->offsprings.size() < this->numPopulation - this->numElite)
         {
 
@@ -383,7 +396,7 @@ std::vector<Wav> &GA::run()
         }
 
         //     // elitism - to be implemented
-        //this->elitism();
+        this->elitism();
 
         // mutation
         for (int i = 0; i < this->numPopulation; i++)

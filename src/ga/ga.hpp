@@ -34,7 +34,8 @@ public:
         MUTATE_SWAP
     };
 
-    std::vector<Wav> &run();
+    std::vector<Wav> &run(int sg);
+    std::vector<Wav> parents; // Wav vector for parent
 
     GA(std::vector<Wav> &wavs);
 
@@ -64,7 +65,6 @@ private:
     int mutateAmount;
 
     /* private vectors */
-    std::vector<Wav> parents;            // Wav vector for parent
     std::vector<float> fitnessOfParents; // Fitness vector of each corresponding parent
     std::vector<uint32_t> matingPool;    // Selected parents' index by selection algorithm
     std::vector<Wav> offsprings;         // Wav vector made by parents(crossover, mutation, etc)

@@ -7,8 +7,11 @@
 
 #include "fitness.hpp"
 
+#include <iostream>
+using namespace std;
+
 Fitness::Fitness(std::vector<Wav> &originals)
-    : originals(originals), _fitness(0), gamma(0.5), sampleRate(100)
+    : originals(originals), _fitness(0), gamma(0.85), sampleRate(100)
 {
     path_to_apikey = "../google_api_key.json";
     path_to_python = "./fitness/google_api_python.py";
@@ -28,6 +31,8 @@ bool Fitness::evaluate(Wav &wav)
         return false;
     }
     this->_fitness = incomprehensibility.fitness() * gamma + interpretability.fitness() * (1 - gamma);
+
+    cout << "f: " << incomprehensibility.fitness() << ", " << interpretability.fitness() << "(" << interpretability.transcript() << ")" << endl;
 
     return true;
 }
