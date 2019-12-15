@@ -21,6 +21,32 @@
         <textarea id="content"></textarea><br>
     </div>
     <button id="submit">Submit</button>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.5.2/firebase-app.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/7.5.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.5.2/firebase-database.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+        https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.5.2/firebase-analytics.js"></script>
+
+    <script>
+    // Your web app's Firebase configuration
+    var firebaseConfig = {
+        apiKey: "AIzaSyCkDBSV7nx7x0OlOXi1W1fOP8HNaPcWsjU",
+        authDomain: "false-positive-a2b87.firebaseapp.com",
+        databaseURL: "https://false-positive-a2b87.firebaseio.com",
+        projectId: "false-positive-a2b87",
+        storageBucket: "false-positive-a2b87.appspot.com",
+        messagingSenderId: "774725056634",
+        appId: "1:774725056634:web:4ff8a36adb9086330ae3c3",
+        measurementId: "G-6V6J6QZVLV"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+    </script>
     <script src="processor.js"></script>
 </body>
 </html>

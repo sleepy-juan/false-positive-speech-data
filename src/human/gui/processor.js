@@ -1,7 +1,7 @@
 var filename =1;
 var yesno = ["Comprehended"];
 var answers = ["Answers"];
-const totalQuestions = 8;
+const totalQuestions = 23;
 
 document.getElementById("submit").addEventListener("click", function(){
     if(recordCurrent()){
@@ -73,3 +73,13 @@ function exportCSV(){
 
     window.alert("Your Test is Complete. Submit the downloaded CSV file to the researchers")
 }
+
+
+// function fbExample(){
+//     firebase.database().ref("/array").on("value", snapshot => {
+//         let value = snapshot.val();
+        
+//         value.forEach(i => console.log(i+1));
+//     });
+// }
+// fbExample();
