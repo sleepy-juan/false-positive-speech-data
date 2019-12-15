@@ -25,6 +25,7 @@ def CrossoverTwoFiles(Path, FileNameToCrossover1, FileNameToCrossover2, Generati
         FileToCrossover2 = wave.open(Path + FileNameToCrossover2, 'rb')
         CrossoverFile1 = wave.open('./modified/' + str(Generation) + '/' + FileNameToCrossover1, 'wb')
         CrossoverFile2 = wave.open('./modified/' + str(Generation) + '/' + '_'+ FileNameToCrossover2, 'wb')
+        # CrossoverFile2 = wave.open('./modified/' + str(Generation) + '/' + FileNameToCrossover2, 'wb')
 
         nchannels1, sampwidth1, framerate1, nframes1, comptype1, compname1 = FileToCrossover1.getparams()
         nchannels2, sampwidth2, framerate2, nframes2, comptype2, compname2 = FileToCrossover2.getparams()
