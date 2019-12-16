@@ -1,4 +1,4 @@
-# Plan B
+# Preprocessing
 
 false-positive-speech-data implementation in python version of CS454, KAIST, 2019 Fall
 
@@ -6,7 +6,7 @@ false-positive-speech-data implementation in python version of CS454, KAIST, 201
 
 
 
-## About the Plan B
+## About the Preprocessing
 
 Plan B is implemented in python and it covers most of functions in plan A. We planed genetic algorithm and we made a prediction as GA will take a lots of time. So we planned to implement with C/C++ to increase efficiency. However, the investigation found the benefits of using Python's library to make it much simpler. Therefore, we have attempted parallel development with Python in order to implement multiple functions more flexibly.
 
@@ -53,5 +53,5 @@ In  `modified` folder, there are several folders that named as number, and it me
 The project is implemented in python version 3.8
 
 ```python
-$ python3 GAforFPSD.py
+$ python3 Preprocessing.py
 ```
