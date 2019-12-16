@@ -13,6 +13,7 @@
 #include <vector>
 #include <cstring>
 #include <stdlib.h>
+#include <cmath>
 
 #include "../wav/wav.hpp"
 
@@ -39,7 +40,7 @@ int main(int argc, char **argv)
         std::cout << "Unable to open" << std::endl;
         return -1;
     }
-    int answer = bitwiseAverageCalibrated("test_audio/original.wav", "test_audio/modified.wav");
+    int answer = bitwiseAverageCalibrated("./test_audio/original.wav", "./test_audio/modified.wav");
     std::cout << answer << std::endl;
 }
 
