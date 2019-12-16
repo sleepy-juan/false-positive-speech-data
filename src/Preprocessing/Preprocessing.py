@@ -2,6 +2,7 @@ import os
 import shutil
 import wave
 import random
+from pydub import AudioSegment
 
 
 def ReadOriginalFiles(SrcPath, DesPath):
@@ -67,6 +68,7 @@ def Crossover(Path, Pool, Generation):
         CrossoverTwoFiles(Path, file, random.choice(Pool), Generation)
 
 
+
 def CalculateFitness_Sum(File1, File2):
     try:
         FileToCompare1 = wave.open(File1, 'rb')
@@ -92,19 +94,44 @@ def CalculateFitness_Sum(File1, File2):
         return Difference
 
 
+def DetectSilence(sound, silence_threshold=-50.0, chunk_size=10):
+
+    trim_ms = 0
+
+    assert chunk_size > 0
+
+    while sound[trim_ms:trim_ms+chunk_size].dBFS < silence_threshold and trim_ms < len(sound):
+        trim_ms += chunk_size
+
+    return trim_ms
+
+
+def DeleteSilence(file, SrcPath, DesPath):
+    sound = AudioSegment.from_file(SrcPath+file, format="wav")
+
+    start_trim = DetectSilence(sound)
+    end_trim = DetectSilence(sound.reverse())
+
+    duration = len(sound)    
+    trimmed_sound = sound[start_trim:duration-end_trim]
+
+    trimmed_sound.export(DesPath+file, format="wav")
+
+
 for i in range(101):
     shutil.rmtree('modified/'+str(i))
     os.makedirs('modified/'+str(i))
 
-InitalPool = ReadOriginalFiles('../audio/original/', './modified/0/')
+InitalPool = ReadOriginalFiles('../../audio/original/', './modified/0_/')
+
+for file in InitalPool:
+    DeleteSilence(file, '../../audio/original/', './modified/0/')
 
 for i in range(100):
 
     Pool = os.listdir('./modified/'+str(i)+'/')
     Crossover('./modified/'+str(i)+'/', Pool, i+1)
 
-
-    # # 차이가 커지도록 프레셔
     # for file in os.listdir('./modified/'+str(i+1)+'/'):
     #     if file.startswith('_'):
     #         FileToCompare1 = './modified/'+str(i+1)+'/'+file
@@ -115,7 +142,6 @@ for i in range(100):
     #             os.remove(FileToCompare2)
     #             os.rename(FileToCompare1, FileToCompare2)
 
-    # 차이가 작도록 프레셔
     # for file in os.listdir('./modified/'+str(i+1)+'/'):
     #     if file.startswith('_'):
     #         FileToCompare1 = './modified/'+str(i+1)+'/'+file
