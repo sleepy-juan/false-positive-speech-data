@@ -18,6 +18,7 @@ try:
     for i in range(nframes1):
         Difference += abs(FileToCompare1_Frames[i]-FileToCompare2_Frames[i])
 
+    Difference /= nframes1
     print(Difference)
 
 finally:

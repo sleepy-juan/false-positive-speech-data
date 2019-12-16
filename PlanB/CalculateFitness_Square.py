@@ -1,4 +1,5 @@
 import wave
+import math
 
 
 try:
@@ -16,7 +17,7 @@ try:
 
     Difference = 0
     for i in range(nframes1):
-        Difference += abs(FileToCompare1_Frames[i]-FileToCompare2_Frames[i])
+        Difference += math.sqrt(abs(FileToCompare1_Frames[i]^2-FileToCompare2_Frames[i]^2))
 
     print(Difference)
 
