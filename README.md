@@ -27,6 +27,7 @@ The course project requires you to identify and formulate an SBSE problem and so
 * Genetic Algorithm: **Kihoon**
 * Fitness: **Sungwoo(Incomprehensibility)**, Taehyeon, Juan(Interpretability)
 * Human in the Loop: **Taehyeon**, **Hyunchang**
+* Plan B: **Taehyeon**
 * Evaluation: **Hyunchang**, Kihoon
 * Coursework: **Everyone**
 * AI Study: Kihoon, Juan, Sungwoo
